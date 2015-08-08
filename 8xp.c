@@ -9,30 +9,22 @@
 
 void ft_append_instruction(s_instruction **list, s_instruction *elem)
 {
+    /* if empty instruction, skip it */
+    if (elem->tokens_length == 0)
+    {
+        // todo: free elem
+        return;
+    }
+
+    /* empty list */
     if (*list == NULL)
     {
         *list = elem;
     }
+    /* append instruction */
     else
     {
         s_instruction *ptr = *list;
-
-        while (ptr->next)
-            ptr = ptr->next;
-
-        ptr->next = elem;
-    }
-}
-
-void ft_append_token(s_token **list, s_token *elem)
-{
-    if (*list == NULL)
-    {
-        *list = elem;
-    }
-    else
-    {
-        s_token *ptr = *list;
 
         while (ptr->next)
             ptr = ptr->next;
@@ -98,12 +90,9 @@ char *ft_8xp_read_code(char *file, int *code_length)
 s_instruction *ft_8xp_parse_code(char *raw_code, int code_length)
 {
     char *code_ptr = raw_code;
-    s_instruction *code = NULL, *cur_instruction = NULL;
-
-    /* init */
-    cur_instruction = calloc(1, sizeof(s_instruction));
-    if (cur_instruction == NULL)
-        ft_abort("malloc");
+    s_token *ci_code[128]; /* current_instruction */
+    int ci_index = 0;
+    s_instruction *ret = NULL;
 
     /* loop over the code */
     while (code_ptr < raw_code + code_length)
@@ -112,18 +101,18 @@ s_instruction *ft_8xp_parse_code(char *raw_code, int code_length)
 
         if (token->opcode[0] == 0X3E || token->opcode[0] == 0X3F) /* next instruction */
         {
-            ft_append_instruction(&code, cur_instruction);
-
-            cur_instruction = calloc(1, sizeof(s_instruction));
-            if (cur_instruction == NULL)
-                ft_abort("malloc");
+            ft_append_instruction(&ret, ft_instruction_parse(ci_code, ci_index));
+            ci_index = 0;
         }
         else /* regular token */
         {
-            ft_append_token(&cur_instruction->tokens, token);
+            ci_code[ci_index] = token;
+            ci_index ++;
+            // todo: check overflow
         }
     }
 
-    return code;
-}
+    ft_append_instruction(&ret, ft_instruction_parse(ci_code, ci_index));
 
+    return ret;
+}

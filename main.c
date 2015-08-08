@@ -19,25 +19,23 @@ void ft_abort(char *msg)
 
 void ft_print_code(s_instruction *ptr_code)
 {
-    int i;
+    int i, j;
 
-    printf("\nopcode [type] string\n");
+    printf("\ntokens string\n\n");
 
     while (ptr_code)
     {
-        s_token *ptr_token = ptr_code->tokens;
-
-        while (ptr_token)
+        for (i = 0; i < ptr_code->tokens_length; ++i)
         {
-            for (i = 0; i < ptr_token->read_further; ++i)
-                printf("%02x", (unsigned char)ptr_token->opcode[i]);
-            for (; i < 3; ++i)
-                printf("  ");
-            printf(" %s\n", ptr_token->string);
-
-            ptr_token = ptr_token->next;
+            for (j = 0; j < 4; ++j)
+            {
+                if (ptr_code->tokens[i]->opcode[j] != 0x00)
+                    printf("%02x", (unsigned char)ptr_code->tokens[i]->opcode[j]);
+            }
+            printf(" %s\n", ptr_code->tokens[i]->string);
         }
 
+        printf("\n");
         ptr_code = ptr_code->next;
     }
 }

@@ -3,6 +3,7 @@
 
 #include "instruction.h"
 
+void ft_append_instruction(s_instruction **list, s_instruction *elem);
 int ft_fread(char *buf, int size, FILE *f);
 char *ft_8xp_read_code(char *file, int *code_length);
 s_instruction *ft_8xp_parse_code(char *raw_code, int code_length);
