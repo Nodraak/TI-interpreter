@@ -171,6 +171,7 @@ s_token *ft_token_next(char **code_ptr)
     ret = malloc(sizeof(s_token));
     if (ret == NULL)
         ft_abort("malloc");
+    memcpy(ret, token, sizeof(s_token));
 
     memcpy(ret->opcode, current_opcode, 4);
     ret->string = strdup(token->string);

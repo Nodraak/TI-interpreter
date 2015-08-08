@@ -16,7 +16,9 @@ typedef struct _s_param s_param;
 typedef struct              _s_function
 {
     void*(*callback)(s_param *av[]);
-    s_param                  **av;
+    int                     ac;
+    s_param                 **av;
+    char                    *name;
 }                           s_function;
 
 typedef struct              _s_param

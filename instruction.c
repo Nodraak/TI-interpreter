@@ -29,6 +29,28 @@ s_param *parse_int(s_token **tokens, int length)
     return ret;
 }
 
+
+s_param *parse_str(s_token **tokens, int length)
+{
+    // todo: check overflow somewhere
+    int i = 0, str_length = 0;
+    s_param *ret = malloc(sizeof(s_param));
+    ret->type = PARAM_STR;
+
+    i = 1; // skip first "\""
+    while (tokens[i]->opcode[0] != 0x2A)
+        i ++;
+    str_length = i-1;
+
+    ret->str = malloc(sizeof(char)*str_length);
+    for (i = 1; i < str_length+1; ++i)
+        ret->str[i-1] = tokens[i]->string[0];
+    ret->str[i-1] = '\0';
+
+    return ret;
+}
+
+
 void *ft_callback(s_param *av[])
 {
     printf("in ft_callback\n");
@@ -38,10 +60,10 @@ void *ft_callback(s_param *av[])
 
 void *ft_get_callback(s_token *token)
 {
+    printf("get callback %x\n", token->opcode[0]);
     switch (token->opcode[0])
     {
-        case 0x42:
-            return ft_callback;
+        // todo
     }
     return NULL;
 }
@@ -56,27 +78,39 @@ s_param *parse_func(s_token *func, s_token **tokens, int length)
 
     function = malloc(sizeof(s_function));
     function->callback = ft_get_callback(func);
+    function->name = strdup(func->string);
 
-    // count args
-    int i = 0, j = 0, nb_args = 0, arg_len = 0;
-    for (i = 0; i < length; ++i)
+    if (length == 0) /* no args, just the function call */
     {
-        if (tokens[i]->opcode[0] == 0x2B) // todo define opcode
-            nb_args ++;
+        function->ac = 0;
+        function->av = NULL;
     }
-    nb_args ++;
-
-    // get args
-    function->av = malloc(sizeof(s_param*)*nb_args);
-    j = 0;
-    for (i = 0; i < nb_args; ++i)
+    else /* there is at least one arg */
     {
-        arg_len = 0;
-        while (j < length && tokens[j]->opcode[0] != 0x2B)
-            j ++, arg_len ++;
+        int i = 0, j = 0, nb_args = 0, arg_len = 0;
 
-        function->av[i] = ft_tokens_parse_tokens(tokens+j-arg_len, arg_len);
-        j++;
+        // count args
+        for (i = 0; i < length; ++i)
+        {
+            if (tokens[i]->opcode[0] == 0x2B) // todo define opcode
+                nb_args ++;
+        }
+        nb_args ++;
+
+        function->ac = nb_args;
+
+        // get args
+        function->av = malloc(sizeof(s_param*)*nb_args);
+        j = 0;
+        for (i = 0; i < nb_args; ++i)
+        {
+            arg_len = 0;
+            while (j < length && tokens[j]->opcode[0] != 0x2B)
+                j ++, arg_len ++;
+
+            function->av[i] = ft_tokens_parse_tokens(tokens+j-arg_len, arg_len);
+            j++;
+        }
     }
 
     /* ret */
@@ -128,25 +162,29 @@ s_param *ft_tokens_parse_tokens(s_token **tokens, int length)
     {
         if (tokens[0]->type == TOKEN_INT)
             return parse_int(tokens, length);
-        /*else if tokens[0] == "\""
+        else if (tokens[0]->opcode[0] == 0x2A) // todo define op "\""
             return parse_str(tokens, length);
-        else if tokens[0] == var
+        /*else if tokens[0] == var
             return parse_var(tokens, length);
         else if tokens[0] == func
             return parse_func(tokens[0], tokens[1:], length-1);
+            other
         todo todo lots of todo
         */
         else
         {
-            ft_abort("NotImplemented (token_type=%d) (todo or error ?)", tokens[0]->type);
-            return NULL; /* silent warning */
+            printf("NotImplemented (token_type=%d) (todo or error ?)\n", tokens[0]->type);
+            s_param *ret = malloc(sizeof(s_param));
+            ret->type = PARAM_INT;
+            ret->n = 42;
+            return ret;
         }
     }
     else
     {
-        s_token *op = tokens[index];
+        s_token *op = memdup(tokens[index], sizeof(s_token));
         *(tokens[index]) = (s_token){{0x2B}, 0, TOKEN_OTHER, "[    ] ,"}; // todo define opcode
-        return parse_func(op, tokens, length);
+        return parse_func(op, &tokens[1], length-1);
     }
 }
 

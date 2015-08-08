@@ -101,8 +101,11 @@ s_instruction *ft_8xp_parse_code(char *raw_code, int code_length)
 
         if (token->opcode[0] == 0X3E || token->opcode[0] == 0X3F) /* next instruction */
         {
-            ft_append_instruction(&ret, ft_instruction_parse(ci_code, ci_index));
-            ci_index = 0;
+            if (ci_index != 0) /* if the instruction is not empty */
+            {
+                ft_append_instruction(&ret, ft_instruction_parse(ci_code, ci_index));
+                ci_index = 0;
+            }
         }
         else /* regular token */
         {
@@ -112,7 +115,8 @@ s_instruction *ft_8xp_parse_code(char *raw_code, int code_length)
         }
     }
 
-    ft_append_instruction(&ret, ft_instruction_parse(ci_code, ci_index));
+    if (ci_index != 0)
+        ft_append_instruction(&ret, ft_instruction_parse(ci_code, ci_index));
 
     return ret;
 }
