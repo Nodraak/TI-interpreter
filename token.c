@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "token.h"
 
@@ -144,3 +145,38 @@ s_token *tokens[] = {
     tokens_2,
     tokens_3,
 };
+
+
+s_token *ft_token_next(char **code_ptr)
+{
+    int i = 0, byte_count = 0;
+    char current_opcode[4] = "";
+    s_token *token = NULL, *ret = NULL;
+
+    do
+    {
+        current_opcode[byte_count] = **code_ptr;
+        (*code_ptr) ++;
+
+        for (i = 0; strcmp(tokens[byte_count][i].opcode, "\xFF") != 0; ++i)
+        {
+            if (strcmp(tokens[byte_count][i].opcode, current_opcode) == 0)
+                break;
+        }
+        token = &tokens[byte_count][i];
+
+        byte_count ++;
+    } while (token->read_further);
+
+    ret = malloc(sizeof(s_token));
+    if (ret == NULL)
+        ft_abort("malloc");
+
+    strcpy(ret->opcode, current_opcode);
+    ret->read_further = byte_count;
+    ret->string = strdup(token->string);
+    ret->next = NULL;
+
+    return ret;
+}
+

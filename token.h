@@ -11,4 +11,6 @@ typedef struct      _s_token
 
 extern s_token *tokens[];
 
+s_token *ft_token_next(char **code_ptr);
+
 #endif
