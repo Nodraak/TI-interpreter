@@ -56,7 +56,10 @@ void ft_print_sparam(s_param *param, int level)
                 ft_print_sparam(param->function->av[j], level+1);
             break;
         case PARAM_VAR:
-            printf("var: <todo>\n");
+            if (param->var == VAR_OMEGA)
+                printf("var: \"Omega\"\n");
+            else
+                printf("var: \"%c\"\n", 'A'+param->var);
             break;
         default:
             printf("<unknown todo>\n");

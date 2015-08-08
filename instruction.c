@@ -51,6 +51,26 @@ s_param *parse_str(s_token **tokens, int length)
 }
 
 
+s_param *parse_var(s_token **tokens, int length)
+{
+    s_param *ret = NULL;
+    ret = malloc(sizeof(s_param));
+    ret->type = PARAM_VAR;
+
+    if ((tokens[0]->opcode[0] < 0x41) || (tokens[0]->opcode[0] > 0x5B)) // todo define opcode
+    {
+        printf("[parse_var] Unknown var\n");
+        ret->var = VAR_A;
+    }
+    else
+    {
+        ret->var = tokens[0]->opcode[0] - 0x41; // todo define opcode
+    }
+
+    return ret;
+}
+
+
 void *ft_callback(s_param *av[])
 {
     printf("in ft_callback\n");
@@ -128,17 +148,18 @@ int ft_tokens_split_get_index(s_token **tokens, int length)
 {
     int i = 0;
     int ret_index = -1;
-    int ret_priority = -1;
+    int ret_priority = 100;
 
     for (i = 0; i < length; ++i)
     {
-        if ((tokens[i]->priority != 0) && (tokens[i]->priority > ret_priority))
+        if ((tokens[i]->priority != 0) && (tokens[i]->priority < ret_priority))
         {
             ret_index = i;
             ret_priority = tokens[i]->priority;
         }
 
-        if ((tokens[i]->type == TOKEN_FUNC) || (tokens[i]->opcode[0] == 0x10))  // todo define opcode (0x10 == "(")
+        // todo  tokens[i]->type == TOKEN_FUNC_WITH_PARAM --> operator
+        if (/*(tokens[i]->type == TOKEN_FUNC) ||*/ (tokens[i]->opcode[0] == 0x10))  // todo define opcode (0x10 == "(")
         {
             do {
                 i ++;
@@ -164,27 +185,32 @@ s_param *ft_tokens_parse_tokens(s_token **tokens, int length)
             return parse_int(tokens, length);
         else if (tokens[0]->opcode[0] == 0x2A) // todo define op "\""
             return parse_str(tokens, length);
-        /*else if tokens[0] == var
+        else if (tokens[0]->type == TOKEN_VAR)
             return parse_var(tokens, length);
-        else if tokens[0] == func
+        /*else if tokens[0] == func
             return parse_func(tokens[0], tokens[1:], length-1);
             other
         todo todo lots of todo
         */
         else
         {
-            printf("NotImplemented (token_type=%d) (todo or error ?)\n", tokens[0]->type);
+            printf("NotImplemented (token_type=%d) (todo or error ?) -> opcode=%x\n", tokens[0]->type, (unsigned char)tokens[0]->opcode[0]);
             s_param *ret = malloc(sizeof(s_param));
             ret->type = PARAM_INT;
             ret->n = 42;
             return ret;
         }
     }
+    else if (index == 0)
+    {
+        return parse_func(tokens[0], &tokens[1], length-1);
+    }
     else
     {
         s_token *op = memdup(tokens[index], sizeof(s_token));
-        *(tokens[index]) = (s_token){{0x2B}, 0, TOKEN_OTHER, "[    ] ,"}; // todo define opcode
-        return parse_func(op, &tokens[1], length-1);
+        // todo urgent better parsing (ie: dont overwrite the token) (priority issue)
+        *(tokens[index]) = (s_token){{0x2B}, tokens[index]->priority, TOKEN_OTHER, "[    ] ,"}; // todo define opcode
+        return parse_func(op, tokens, length);
     }
 }
 

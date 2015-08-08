@@ -6,6 +6,7 @@ typedef enum    _e_token
     TOKEN_INT,
     TOKEN_VAR,
     TOKEN_FUNC,
+    // operator
     TOKEN_OTHER,
     TOKEN_INCOMPLETE,
     TOKEN_UNKNOWN,
@@ -22,10 +23,10 @@ typedef struct      _s_token
 
 /*
 priority:
+    5 ->
     10 + -
     20 * /
     30 ^ !
-    40 ->
 */
 
 extern s_token *tokens[];

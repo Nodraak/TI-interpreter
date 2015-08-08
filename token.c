@@ -5,7 +5,7 @@
 #include "token.h"
 
 s_token tokens_1[] = {
-    {{0x04}, 40, TOKEN_FUNC, "->"},
+    {{0x04}, 5, TOKEN_FUNC, "->"},
 
     {{0x0D}, 30, TOKEN_FUNC, "^2"},
 
@@ -60,7 +60,7 @@ s_token tokens_1[] = {
     {{0x58}, 0, TOKEN_VAR, "X"},
     {{0x59}, 0, TOKEN_VAR, "Y"},
     {{0x5A}, 0, TOKEN_VAR, "Z"},
-    {{0x5B}, 0, TOKEN_VAR, "Omage"},
+    {{0x5B}, 0, TOKEN_VAR, "0mega"},
 
     {{0x5D}, 0, TOKEN_INCOMPLETE, "<incomplete>"},
 
