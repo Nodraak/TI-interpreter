@@ -31,6 +31,10 @@ void print_tokens(s_token **tokens, int length)
         printf(" %02x", (unsigned char)tokens[i]->opcode[0]);
     printf("\n");
 
+    printf("token[]->string");
+    for (i = 0; i < length; ++i)
+        printf(" %s", tokens[i]->string);
+    printf("\n");
 }
 
 

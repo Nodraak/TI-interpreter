@@ -5,8 +5,9 @@ typedef enum    _e_token
 {
     TOKEN_INT,
     TOKEN_VAR,
-    TOKEN_FUNC,
-    // operator
+    TOKEN_FUNC,                 /* ex: EffEcr() */
+    TOKEN_FUNC_WITH_PARAM,      /* ex: Input(...) */
+    TOKEN_OP,                   /* ex: +, *, -> */
     TOKEN_OTHER,
     TOKEN_INCOMPLETE,
     TOKEN_UNKNOWN,

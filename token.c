@@ -5,7 +5,7 @@
 #include "token.h"
 
 s_token tokens_1[] = {
-    {{0x04}, 5, TOKEN_FUNC, "->"},
+    {{0x04}, 5, TOKEN_OP, "->"},
 
     {{0x0D}, 30, TOKEN_FUNC, "^2"},
 
@@ -71,28 +71,28 @@ s_token tokens_1[] = {
     {{0x6C}, 0, TOKEN_OTHER, ">"},
 
     {{0x6F}, 0, TOKEN_OTHER, "!="},
-    {{0x70}, 10, TOKEN_OTHER, "+"},
-    {{0x71}, 10, TOKEN_OTHER, "-"},
+    {{0x70}, 10, TOKEN_OP, "+"},
+    {{0x71}, 10, TOKEN_OP, "-"},
 
-    {{0x82}, 20, TOKEN_FUNC, "*"},
-    {{0x83}, 20, TOKEN_FUNC, "/"},
+    {{0x82}, 20, TOKEN_OP, "*"},
+    {{0x83}, 20, TOKEN_OP, "/"},
 
     {{0x85}, 0, TOKEN_FUNC, "EffDessin"},
 
-    {{0x93}, 0, TOKEN_FUNC, "Texte"},
+    {{0x93}, 0, TOKEN_FUNC_WITH_PARAM, "Texte"},
 
-    {{0x9C}, 0, TOKEN_FUNC, "Ligne"},
-    {{0x9E}, 0, TOKEN_FUNC, "Pt-Aff"},
-    {{0x9F}, 0, TOKEN_FUNC, "Pt-NAff"},
+    {{0x9C}, 0, TOKEN_FUNC_WITH_PARAM, "Ligne"},
+    {{0x9E}, 0, TOKEN_FUNC_WITH_PARAM, "Pt-Aff"},
+    {{0x9F}, 0, TOKEN_FUNC_WITH_PARAM, "Pt-NAff"},
 
     {{0xB0}, 0, TOKEN_FUNC, "(-)"},
-    {{0xB1}, 0, TOKEN_FUNC, "partEnt("},
+    {{0xB1}, 0, TOKEN_FUNC_WITH_PARAM, "partEnt("},
 
     {{0xB5}, 0, TOKEN_OTHER, "dim("},
 
-    {{0xBA}, 0, TOKEN_FUNC, "partDec("},
+    {{0xBA}, 0, TOKEN_FUNC_WITH_PARAM, "partDec("},
     {{0xBB}, 0, TOKEN_INCOMPLETE, "<incomplete>"},
-    {{0xBC}, 0, TOKEN_FUNC, "sqrt("},
+    {{0xBC}, 0, TOKEN_FUNC_WITH_PARAM, "sqrt("},
 
     {{0xCE}, 0, TOKEN_OTHER, "If"},
     {{0xCF}, 0, TOKEN_OTHER, "Then"},
@@ -106,13 +106,13 @@ s_token tokens_1[] = {
     {{0xD6}, 0, TOKEN_OTHER, "Lbl"},
     {{0xD7}, 0, TOKEN_OTHER, "Goto"},
 
-    {{0xDC}, 0, TOKEN_FUNC, "Input("},
+    {{0xDC}, 0, TOKEN_FUNC_WITH_PARAM, "Input("},
 
-    {{0xDE}, 0, TOKEN_FUNC, "Disp"},
+    {{0xDE}, 0, TOKEN_FUNC_WITH_PARAM, "Disp"},
 
     {{0xE1}, 0, TOKEN_FUNC, "EffEcr"},
 
-    {{0xF0}, 30, TOKEN_OTHER, "^"},
+    {{0xF0}, 30, TOKEN_OP, "^"},
 
     {{0xFF}, 0, TOKEN_OTHER, "xx Error 1"},
 };
