@@ -15,7 +15,7 @@ s_param *parse_int(s_token **tokens, int length)
     ret->n = 0;
 
     for (i = length-1; i >= 0; --i)
-        ret->n += ((unsigned char)tokens[i]->opcode[0]-0x30) * pow(10, length-1-i);
+        ret->n += (tokens[i]->opcode[0]-0x30) * pow(10, length-1-i);
 
     return ret;
 }

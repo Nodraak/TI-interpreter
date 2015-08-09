@@ -148,10 +148,10 @@ s_token *tokens_data[] = {
 };
 
 
-s_token *ft_token_next(char **code_ptr)
+s_token *ft_token_next(unsigned char **code_ptr)
 {
     int i = 0, byte_count = 0;
-    char current_opcode[4] = "";
+    unsigned char current_opcode[4] = "";
     s_token *token = NULL, *ret = NULL;
 
     do
@@ -159,9 +159,9 @@ s_token *ft_token_next(char **code_ptr)
         current_opcode[byte_count] = **code_ptr;
         (*code_ptr) ++;
 
-        for (i = 0; strcmp(tokens_data[byte_count][i].opcode, "\xFF") != 0; ++i)
+        for (i = 0; memcmp(tokens_data[byte_count][i].opcode, "\xFF", 1) != 0; ++i)
         {
-            if (strcmp(tokens_data[byte_count][i].opcode, current_opcode) == 0)
+            if (memcmp(tokens_data[byte_count][i].opcode, current_opcode, byte_count+1) == 0)
                 break;
         }
         token = &tokens_data[byte_count][i];

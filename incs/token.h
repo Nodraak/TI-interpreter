@@ -10,13 +10,13 @@ typedef enum    _e_token
     TOKEN_OP,                   /* ex: +, *, -> */
     TOKEN_OTHER,
     TOKEN_INCOMPLETE,
-    TOKEN_UNKNOWN,
+    TOKEN_UNKNOWN
 }               e_token;
 
 
 typedef struct      _s_token
 {
-    char            opcode[4];
+    unsigned char   opcode[4];
     int             priority;
     e_token         type;
     char            *string;
@@ -32,6 +32,6 @@ priority:
 
 extern s_token *tokens[];
 
-s_token *ft_token_next(char **code_ptr);
+s_token *ft_token_next(unsigned char **code_ptr);
 
 #endif

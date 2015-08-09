@@ -62,7 +62,7 @@ s_param *ft_tokens_parse_tokens(s_token **tokens, int length)
         */
         else
         {
-            //printf("NotImplemented (token_type=%d) (todo or error ?) -> opcode=%x\n", tokens[0]->type, (unsigned char)tokens[0]->opcode[0]);
+            //printf("NotImplemented (token_type=%d) (todo or error ?) -> opcode=%x\n", tokens[0]->type, tokens[0]->opcode[0]);
             s_param *ret = malloc(sizeof(s_param));
             ret->type = PARAM_INT;
             ret->n = 42;

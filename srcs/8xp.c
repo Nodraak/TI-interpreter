@@ -2,9 +2,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "8xp.h"
 #include "token.h"
 #include "instruction.h"
+#include "utils.h"
+#include "8xp.h"
 
 
 void ft_append_instruction(s_instruction **list, s_instruction *elem)
@@ -34,20 +35,19 @@ void ft_append_instruction(s_instruction **list, s_instruction *elem)
 }
 
 
-int ft_fread(char *buf, int size, FILE *f)
+int ft_fread(unsigned char *buf, int size, FILE *f)
 {
-    int ret = fread(buf, 1, size, f);
+    int ret = fread((char*)buf, 1, size, f);
     buf[ret] = '\0';
     return ret;
 }
 
 
-char *ft_8xp_read_code(char *file, int *code_length)
+unsigned char *ft_8xp_read_code(char *file, int *code_length)
 {
     FILE *f = NULL;
-    char buf[1024];
+    unsigned char buf[1024], *raw_code = NULL;
     int header_size = 8+3+40+9+6+8;
-    char *raw_code;
 
     f = fopen(file, "r");
     if (f == NULL)
@@ -81,15 +81,15 @@ char *ft_8xp_read_code(char *file, int *code_length)
     ft_fread(raw_code, *code_length, f);
 
     ft_fread(buf, 3, f);
-    printf("control sum: %2x%2x\n", (unsigned char)buf[0], (unsigned char)buf[1]);
+    printf("control sum: %2x%2x\n", buf[0], buf[1]);
 
     return raw_code;
 }
 
 
-s_instruction *ft_8xp_parse_code(char *raw_code, int code_length)
+s_instruction *ft_8xp_parse_code(unsigned char *raw_code, int code_length)
 {
-    char *code_ptr = raw_code;
+    unsigned char *code_ptr = raw_code;
     s_token *ci_code[128]; /* current_instruction */
     int ci_index = 0;
     s_instruction *ret = NULL;

@@ -8,7 +8,7 @@ typedef enum _e_param
     PARAM_FUNC,
     PARAM_INT,
     PARAM_STR,
-    PARAM_VAR,
+    PARAM_VAR
 }           e_param;
 
 typedef enum    _e_var
@@ -41,7 +41,7 @@ typedef enum    _e_var
     VAR_Z,
     VAR_OMEGA,
 
-    VAR_LAST,
+    VAR_LAST
 }               e_var;
 
 typedef struct _s_param s_param;
@@ -54,7 +54,7 @@ typedef struct              _s_function
     char                    *name;
 }                           s_function;
 
-typedef struct              _s_param
+struct                      _s_param
 {
     e_param                 type;
 
@@ -62,7 +62,7 @@ typedef struct              _s_param
     int                     n;
     char                    *str;
     e_var                   var;
-}                           s_param;
+};
 
 typedef struct              _s_instruction
 {
