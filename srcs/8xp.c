@@ -8,41 +8,6 @@
 #include "8xp.h"
 
 
-void ft_append_instruction(s_instruction **list, s_instruction *elem)
-{
-    /* if empty instruction, skip it */
-    if (elem->tokens_length == 0)
-    {
-        // todo: free elem
-        return;
-    }
-
-    /* empty list */
-    if (*list == NULL)
-    {
-        *list = elem;
-    }
-    /* append instruction */
-    else
-    {
-        s_instruction *ptr = *list;
-
-        while (ptr->next)
-            ptr = ptr->next;
-
-        ptr->next = elem;
-    }
-}
-
-
-int ft_fread(unsigned char *buf, int size, FILE *f)
-{
-    int ret = fread((char*)buf, 1, size, f);
-    buf[ret] = '\0';
-    return ret;
-}
-
-
 unsigned char *ft_8xp_read_code(char *file, int *code_length)
 {
     FILE *f = NULL;
@@ -101,7 +66,7 @@ s_instruction *ft_8xp_parse_code(unsigned char *raw_code, int code_length)
         {
             if (ci_index != 0) /* if the instruction is not empty */
             {
-                ft_append_instruction(&ret, ft_instruction_parse(ci_code, ci_index));
+                ft_8xp_append_instruction(&ret, ft_instruction_parse(ci_code, ci_index));
                 ci_index = 0;
             }
         }
@@ -116,7 +81,34 @@ s_instruction *ft_8xp_parse_code(unsigned char *raw_code, int code_length)
     }
 
     if (ci_index != 0)
-        ft_append_instruction(&ret, ft_instruction_parse(ci_code, ci_index));
+        ft_8xp_append_instruction(&ret, ft_instruction_parse(ci_code, ci_index));
 
     return ret;
+}
+
+
+void ft_8xp_append_instruction(s_instruction **list, s_instruction *elem)
+{
+    /* if empty instruction, skip it */
+    if (elem->tokens_length == 0)
+    {
+        // todo: free elem
+        return;
+    }
+
+    /* empty list */
+    if (*list == NULL)
+    {
+        *list = elem;
+    }
+    /* append instruction */
+    else
+    {
+        s_instruction *ptr = *list;
+
+        while (ptr->next)
+            ptr = ptr->next;
+
+        ptr->next = elem;
+    }
 }

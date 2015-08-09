@@ -29,6 +29,7 @@ struct                      _s_param
     int                     n;
     char                    *str;
     e_var                   var;
+    /* todo cond: if, while, ... */
 };
 
 typedef struct              _s_instruction
@@ -40,8 +41,8 @@ typedef struct              _s_instruction
     struct _s_instruction   *next;
 }                           s_instruction;
 
-int ft_instruction_split_tokens(s_token **tokens, int length);
-s_param *ft_tokens_parse_tokens(s_token **tokens, int length);
+int ft_instruction_split_tokens_by_priority(s_token **tokens, int length);
+s_param *ft_instruction_parse_tokens(s_token **tokens, int length);
 s_instruction *ft_instruction_parse(s_token **tokens, int length);
 
 #endif

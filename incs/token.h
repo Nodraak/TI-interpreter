@@ -60,6 +60,7 @@ typedef struct      _s_token
     int             priority;
     e_token         type;
     char            *string;
+    /* todo callback ? (for func) */
 }                   s_token;
 
 /*
@@ -77,5 +78,6 @@ s_token *ft_token_next(unsigned char **code_ptr);
 int ft_token_get_int(s_token *token);
 e_var ft_token_get_var(s_token *token);
 int ft_token_is_var_std(s_token *token);
+void *ft_token_get_callback(s_token *token);
 
 #endif

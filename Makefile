@@ -3,14 +3,14 @@
 NAME = a.out
 INC_DIR = incs/
 SRCS_DIR = srcs/
-SRCS =	main.c 8xp.c instruction.c parse.c token.c utils.c functions.c
+SRCS =	main.c utils.c token.c 8xp.c 8xp_parse.c instruction.c vm_functions.c
 OBJ = $(SRCS:.c=.o)
 OBJ_DIR = obj/
 INCLUDE =
 LIBS = -lm
 
 CC = gcc
-CFLAGS = -g -Wall -Wextra -pedantic -fdiagnostics-color=auto -I $(INC_DIR) $(INCLUDE)
+CFLAGS = -g -Wall -Wextra -fdiagnostics-color=auto -I $(INC_DIR) $(INCLUDE) #-pedantic
 
 #=== SPECIAL ===
 .PHONY: all, clean, mrproper, re, cls

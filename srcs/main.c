@@ -91,7 +91,9 @@ int main(void)
     s_instruction *code = NULL;
 
     raw_code = ft_8xp_read_code(program[2], &code_length);
+    printf("\nParse code:\n\n");
     code = ft_8xp_parse_code(raw_code, code_length);
+    printf("\nPrintf code:\n\n");
     ft_print_code(code);
 
     return 0;

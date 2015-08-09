@@ -1,13 +1,23 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <math.h>
 
 #include "utils.h"
 #include "instruction.h"
-#include "parse.h"
+#include "8xp_parse.h"
 
-s_param *parse_int(s_token **tokens, int length)
+/*
+todo
+    parse_if
+    parse_while
+    ...
+
+*/
+
+
+s_param *ft_8xp_parse_int(s_token **tokens, int length)
 {
     int i;
     s_param *ret = ft_calloc(sizeof(s_param));
@@ -21,7 +31,7 @@ s_param *parse_int(s_token **tokens, int length)
 }
 
 
-s_param *parse_str(s_token **tokens, int length)
+s_param *ft_8xp_parse_str(s_token **tokens, int length)
 {
     int i = 0, str_length = 0;
     s_param *ret = ft_calloc(sizeof(s_param));
@@ -44,7 +54,7 @@ s_param *parse_str(s_token **tokens, int length)
 }
 
 
-s_param *parse_var(s_token **tokens, int length)
+s_param *ft_8xp_parse_var(s_token **tokens, int length)
 {
     s_param *ret = NULL;
     ret = ft_calloc(sizeof(s_param));
@@ -62,16 +72,16 @@ s_param *parse_var(s_token **tokens, int length)
 }
 
 
-s_param *parse_func(s_token **tokens, int length)
+s_param *ft_8xp_parse_func(s_token **tokens, int length)
 {
     if (length != 1)
         ft_abort("Unexpected number of tokens");
 
-    return parse_make_function(tokens[0], 0, NULL);
+    return ft_8xp_parse_make_function(tokens[0], 0, NULL);
 }
 
 
-s_param *parse_func_with_param(s_token *func, s_token **tokens, int length)
+s_param *ft_8xp_parse_func_with_param(s_token *func, s_token **tokens, int length)
 {
     s_param **av = NULL;
 
@@ -81,7 +91,7 @@ s_param *parse_func_with_param(s_token *func, s_token **tokens, int length)
 
     if (length == 0) /* no args, just the function call */
     {
-        return parse_make_function(func, 0, NULL);
+        return ft_8xp_parse_make_function(func, 0, NULL);
     }
     else /* there is at least one arg */
     {
@@ -104,16 +114,16 @@ s_param *parse_func_with_param(s_token *func, s_token **tokens, int length)
             while ((j < length) && (tokens[j]->type != TOKEN_COMA))
                 j ++, arg_len ++;
 
-            av[i] = ft_tokens_parse_tokens(tokens+j-arg_len, arg_len);
+            av[i] = ft_instruction_parse_tokens(tokens+j-arg_len, arg_len);
             j++;
         }
 
-        return parse_make_function(func, nb_args, av);
+        return ft_8xp_parse_make_function(func, nb_args, av);
     }
 }
 
 
-s_param *parse_op(s_token **tokens, int length, int index)
+s_param *ft_8xp_parse_op(s_token **tokens, int length, int index)
 {
     s_param **av = NULL;
     int i = 0, j = 0, arg_len = 0;
@@ -127,21 +137,22 @@ s_param *parse_op(s_token **tokens, int length, int index)
         while ((j < length) && (j != index))
             j ++, arg_len ++;
 
-        av[i] = ft_tokens_parse_tokens(tokens+j-arg_len, arg_len);
+        av[i] = ft_instruction_parse_tokens(tokens+j-arg_len, arg_len);
         j++;
     }
 
-    return parse_make_function(tokens[index], 2, av);
+    return ft_8xp_parse_make_function(tokens[index], 2, av);
 }
 
-s_param *parse_make_function(s_token *token, int ac, s_param **av)
+
+s_param *ft_8xp_parse_make_function(s_token *token, int ac, s_param **av)
 {
     s_param *ret = NULL;
     s_function *function = NULL;
 
     /* function */
     function = ft_calloc(sizeof(s_function));
-    function->callback = ft_get_callback(token);
+    function->callback = ft_token_get_callback(token);
     function->name = strdup(token->string);
     function->ac = ac;
     function->av = av;

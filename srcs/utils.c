@@ -5,6 +5,7 @@
 #include <errno.h>
 
 #include "instruction.h"
+#include "vm_functions.h"
 #include "utils.h"
 
 
@@ -34,12 +35,9 @@ void *memdup(void *data, int length)
 }
 
 
-void *ft_get_callback(s_token *token)
+int ft_fread(unsigned char *buf, int size, FILE *f)
 {
-    printf("get callback for %x - %s\n", token->opcode[0], token->string);
-    switch (token->opcode[0])
-    {
-        // todo
-    }
-    return NULL;
+    int ret = fread((char*)buf, 1, size, f);
+    buf[ret] = '\0';
+    return ret;
 }

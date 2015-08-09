@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "utils.h"
+#include "vm_functions.h"
 #include "token.h"
 
 s_token tokens_1[] = {
@@ -191,4 +192,21 @@ e_var ft_token_get_var(s_token *token)
 int ft_token_is_var_std(s_token *token)
 {
     return ((token->opcode[0] >= 0x41) && (token->opcode[0] <= 0x5B));
+}
+
+void *ft_token_get_callback(s_token *token)
+{
+    switch (token->opcode[0])
+    {
+        case 0xE1:
+            return ft_vm_functions_effecr;
+        case 0xDC:
+            return ft_vm_functions_input;
+        case 0xDE:
+            return ft_vm_functions_disp;
+
+        default:
+            printf("get callback for %x - %s\n", token->opcode[0], token->string);
+            return NULL;
+    }
 }
