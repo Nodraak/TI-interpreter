@@ -73,18 +73,7 @@ typedef struct              _s_instruction
     struct _s_instruction   *next;
 }                           s_instruction;
 
-
-void *memdup(void *data, int length);
-void *ft_get_callback(s_token *token);
-
-s_param *parse_int(s_token **tokens, int length);
-s_param *parse_str(s_token **tokens, int length);
-s_param *parse_var(s_token **tokens, int length);
-s_param *parse_func(s_token **tokens, int length);
-s_param *parse_func_with_param(s_token *func, s_token **tokens, int length);
-s_param *parse_op(s_token **tokens, int length, int index);
-
-int ft_tokens_split_get_index(s_token **tokens, int length);
+int ft_instruction_split_tokens(s_token **tokens, int length);
 s_param *ft_tokens_parse_tokens(s_token **tokens, int length);
 s_instruction *ft_instruction_parse(s_token **tokens, int length);
 

@@ -2,19 +2,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <errno.h>
 
 #include "8xp.h"
 #include "token.h"
 #include "instruction.h"
-
-
-void ft_abort(char *msg)
-{
-    fprintf(stderr, "Error: %s\n", msg);
-    fprintf(stderr, "(Errno: %d %s)\n", errno, strerror(errno));
-    exit(1);
-}
 
 
 void print_tokens(s_token **tokens, int length)
