@@ -11,39 +11,6 @@ typedef enum _e_param
     PARAM_VAR
 }           e_param;
 
-typedef enum    _e_var
-{
-    VAR_A,
-    VAR_B,
-    VAR_C,
-    VAR_D,
-    VAR_E,
-    VAR_F,
-    VAR_G,
-    VAR_H,
-    VAR_I,
-    VAR_J,
-    VAR_K,
-    VAR_L,
-    VAR_M,
-    VAR_N,
-    VAR_O,
-    VAR_P,
-    VAR_Q,
-    VAR_R,
-    VAR_S,
-    VAR_T,
-    VAR_U,
-    VAR_V,
-    VAR_W,
-    VAR_X,
-    VAR_Y,
-    VAR_Z,
-    VAR_OMEGA,
-
-    VAR_LAST
-}               e_var;
-
 typedef struct _s_param s_param;
 
 typedef struct              _s_function

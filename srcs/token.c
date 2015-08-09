@@ -10,11 +10,11 @@ s_token tokens_1[] = {
 
     {{0x0D}, 30, TOKEN_FUNC, "^2"},
 
-    {{0x10}, 0, TOKEN_OTHER, "("},
-    {{0x11}, 0, TOKEN_OTHER, ")"},
+    {{0x10}, 0, TOKEN_PARENTHESIS_OPEN, "("},
+    {{0x11}, 0, TOKEN_PARENTHESIS_CLOSE, ")"},
 
-    {{0x2A}, 0, TOKEN_OTHER, "\""},
-    {{0x2B}, 0, TOKEN_OTHER, ","},
+    {{0x2A}, 0, TOKEN_DOUBLE_QUOTES, "\""},
+    {{0x2B}, 0, TOKEN_COMA, ","},
 
     {{0x2D}, 30, TOKEN_FUNC, "!"},
 
@@ -32,7 +32,7 @@ s_token tokens_1[] = {
 
     {{0x3A}, 0, TOKEN_OTHER, "."},
 
-    {{0x3E}, 0, TOKEN_OTHER, ": (maybe)"},
+    {{0x3E}, 0, TOKEN_OTHER, ":"},
     {{0x3F}, 0, TOKEN_OTHER, ":"},
 
     {{0x41}, 0, TOKEN_VAR, "A"},
@@ -169,13 +169,26 @@ s_token *ft_token_next(unsigned char **code_ptr)
         byte_count ++;
     } while (token->type == TOKEN_INCOMPLETE);
 
-    ret = malloc(sizeof(s_token));
-    if (ret == NULL)
-        ft_abort("malloc");
+    ret = ft_calloc(sizeof(s_token));
     memcpy(ret, token, sizeof(s_token));
-
     memcpy(ret->opcode, current_opcode, 4);
     ret->string = strdup(token->string);
 
     return ret;
+}
+
+
+int ft_token_get_int(s_token *token)
+{
+    return token->opcode[0]-0x30;
+}
+
+e_var ft_token_get_var(s_token *token)
+{
+    return (token->opcode[0] - 0x41);
+}
+
+int ft_token_is_var_std(s_token *token)
+{
+    return ((token->opcode[0] >= 0x41) && (token->opcode[0] <= 0x5B));
 }

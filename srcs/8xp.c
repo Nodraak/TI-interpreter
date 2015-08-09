@@ -75,9 +75,7 @@ unsigned char *ft_8xp_read_code(char *file, int *code_length)
 
     fseek(f, header_size, SEEK_SET);
 
-    raw_code = malloc(sizeof(char)*(*code_length));
-    if (raw_code == NULL)
-        ft_abort("malloc");
+    raw_code = ft_calloc(sizeof(char)*(*code_length));
     ft_fread(raw_code, *code_length, f);
 
     ft_fread(buf, 3, f);
@@ -111,7 +109,9 @@ s_instruction *ft_8xp_parse_code(unsigned char *raw_code, int code_length)
         {
             ci_code[ci_index] = token;
             ci_index ++;
-            // todo: check overflow
+
+            if (ci_index == 128)
+                ft_abort("incomming overflow");
         }
     }
 

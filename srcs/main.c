@@ -4,27 +4,28 @@
 #include <string.h>
 
 #include "8xp.h"
+#include "utils.h"
 #include "token.h"
 #include "instruction.h"
 
 
 void print_tokens(s_token **tokens, int length)
 {
-    int i;
+    int i, j;
 
-/*
-    printf("token[]->opcode");
+    printf("opcode");
     for (i = 0; i < length; ++i)
-        printf(" %02x", tokens[i]->opcode);
+    {
+        printf(" ");
+        for (j = 0; j < 4; ++j)
+        {
+            if (tokens[i]->opcode[j])
+                printf("%02x", tokens[i]->opcode[j]);
+        }
+    }
     printf("\n");
-*/
 
-    printf("token[]->opcode[0]");
-    for (i = 0; i < length; ++i)
-        printf(" %02x", tokens[i]->opcode[0]);
-    printf("\n");
-
-    printf("token[]->string");
+    printf("string");
     for (i = 0; i < length; ++i)
         printf(" %s", tokens[i]->string);
     printf("\n");
@@ -58,31 +59,17 @@ void ft_print_sparam(s_param *param, int level)
                 printf("var: \"%c\"\n", 'A'+param->var);
             break;
         default:
-            printf("<unknown todo>\n");
+            printf("<unknown type %d (todo)>\n", param->type);
     }
 }
 
 
 void ft_print_code(s_instruction *ptr_code)
 {
-    int i, j;
-
     while (ptr_code)
     {
-        /* tokens */
-        for (i = 0; i < ptr_code->tokens_length; ++i)
-        {
-            for (j = 0; j < 4; ++j)
-            {
-                if (ptr_code->tokens[i]->opcode[j] != 0x00)
-                    printf("%02x", ptr_code->tokens[i]->opcode[j]);
-            }
-            printf(" %s\n", ptr_code->tokens[i]->string);
-        }
-
-        /* param */
+        print_tokens(ptr_code->tokens, ptr_code->tokens_length);
         ft_print_sparam(ptr_code->param, 0);
-
         printf("\n");
         ptr_code = ptr_code->next;
     }

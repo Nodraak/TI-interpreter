@@ -24,12 +24,12 @@ int ft_instruction_split_tokens(s_token **tokens, int length)
             ret_priority = tokens[i]->priority;
         }
 
-        /* discard instructions inside a () or a function */
-        if ((tokens[i]->type == TOKEN_FUNC_WITH_PARAM) || (tokens[i]->opcode[0] == 0x10))  // todo define opcode (0x10 == "(")
+        /* discard instructions inside parenthesis or a function */
+        if ((tokens[i]->type == TOKEN_FUNC_WITH_PARAM) || (tokens[i]->type == TOKEN_PARENTHESIS_OPEN))
         {
             do {
                 i ++;
-            } while ((i < length) && (tokens[i]->opcode[0] != 0x11));
+            } while ((i < length) && (tokens[i]->type != TOKEN_PARENTHESIS_CLOSE));
         }
     }
 
@@ -49,21 +49,16 @@ s_param *ft_tokens_parse_tokens(s_token **tokens, int length)
     {
         if (tokens[0]->type == TOKEN_INT)
             return parse_int(tokens, length);
-        else if (tokens[0]->opcode[0] == 0x2A) // todo define op "\""
+        else if (tokens[0]->type == TOKEN_DOUBLE_QUOTES)
             return parse_str(tokens, length);
         else if (tokens[0]->type == TOKEN_VAR)
             return parse_var(tokens, length);
         else if (tokens[0]->type == TOKEN_FUNC)
             return parse_func(tokens, length);
-        /*else if tokens[0] == func
-            return parse_func(tokens[0], tokens[1:], length-1);
-            other
-        todo todo lots of todo
-        */
         else
         {
-            //printf("NotImplemented (token_type=%d) (todo or error ?) -> opcode=%x\n", tokens[0]->type, tokens[0]->opcode[0]);
-            s_param *ret = malloc(sizeof(s_param));
+            printf("NotImplemented (token_type=%d) (todo or error ?) -> opcode=%x\n", tokens[0]->type, tokens[0]->opcode[0]);
+            s_param *ret = ft_calloc(sizeof(s_param));
             ret->type = PARAM_INT;
             ret->n = 42;
             return ret;
@@ -84,7 +79,7 @@ s_instruction *ft_instruction_parse(s_token **tokens, int length)
 {
     s_instruction *ret = NULL;
 
-    ret = malloc(sizeof(s_instruction));
+    ret = ft_calloc(sizeof(s_instruction));
     ret->tokens = memdup(tokens, length);
     ret->tokens_length = length;
     ret->param = ft_tokens_parse_tokens(tokens, length);
