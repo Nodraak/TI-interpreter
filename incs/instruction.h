@@ -15,7 +15,7 @@ typedef struct _s_param s_param;
 
 typedef struct              _s_function
 {
-    void*(*callback)(int ac, s_param *av[]);
+    void(*callback)(int ac, s_param *av[]);
     int                     ac;
     s_param                 **av;
     char                    *name;
@@ -26,7 +26,7 @@ struct                      _s_param
     e_param                 type;
 
     s_function              *function;
-    int                     n;
+    double                  n;
     char                    *str;
     e_var                   var;
     /* todo cond: if, while, ... */

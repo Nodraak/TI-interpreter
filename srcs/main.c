@@ -42,7 +42,7 @@ void ft_print_sparam(s_param *param, int level)
     switch (param->type)
     {
         case PARAM_INT:
-            printf("int: \"%d\"\n", param->n);
+            printf("int: \"%.2lf\"\n", param->n);
             break;
         case PARAM_STR:
             printf("str: \"%s\"\n", param->str);
@@ -91,10 +91,12 @@ int main(void)
     s_instruction *code = NULL;
 
     raw_code = ft_8xp_read_code(program[2], &code_length);
-    printf("\nParse code:\n\n");
+    printf("\n---------------------------------------- Parse code:\n\n");
     code = ft_8xp_parse_code(raw_code, code_length);
-    printf("\nPrintf code:\n\n");
+    printf("\n---------------------------------------- Printf code:\n\n");
     ft_print_code(code);
+    printf("\n---------------------------------------- Execute code:\n\n");
+    ft_vm_execute_code(code);
 
     return 0;
 }
