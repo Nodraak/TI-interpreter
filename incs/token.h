@@ -57,10 +57,10 @@ typedef enum    _e_var
 typedef struct      _s_token
 {
     unsigned char   opcode[4];
-    int             priority;
+    int             priority; /* operator priority */
     e_token         type;
+    void*           callback; /* for functions */
     char            *string;
-    /* todo callback ? (for func) */
 }                   s_token;
 
 /*
