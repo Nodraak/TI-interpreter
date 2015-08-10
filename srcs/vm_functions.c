@@ -32,9 +32,9 @@ void ft_vm_functions_input(int ac, s_param *av[])
 
 void ft_vm_functions_assign(int ac, s_param *av[])
 {
-    if ((ac == 2) && (av[0]->type == PARAM_INT) && (av[1]->type == PARAM_VAR))
+    if ((ac == 2) && (av[0]->type == PARAM_NUMBER) && (av[1]->type == PARAM_VAR))
     {
-        vm.var[av[1]->var] = av[0]->n;
+        vm.var[av[1]->var] = av[0]->number;
     }
     else
         ft_abort("NotImplemented assign");

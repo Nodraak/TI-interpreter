@@ -20,16 +20,16 @@ s_token tokens_1[] = {
     {{0x2D}, 30,            TOKEN_FUNC,                 NULL,               "!"},
 
     {{0x29}, 0,             TOKEN_OTHER,                NULL,               "' '"},
-    {{0x30}, 0,             TOKEN_INT,                  NULL,               "0"},
-    {{0x31}, 0,             TOKEN_INT,                  NULL,               "1"},
-    {{0x32}, 0,             TOKEN_INT,                  NULL,               "2"},
-    {{0x33}, 0,             TOKEN_INT,                  NULL,               "3"},
-    {{0x34}, 0,             TOKEN_INT,                  NULL,               "4"},
-    {{0x35}, 0,             TOKEN_INT,                  NULL,               "5"},
-    {{0x36}, 0,             TOKEN_INT,                  NULL,               "6"},
-    {{0x37}, 0,             TOKEN_INT,                  NULL,               "7"},
-    {{0x38}, 0,             TOKEN_INT,                  NULL,               "8"},
-    {{0x39}, 0,             TOKEN_INT,                  NULL,               "9"},
+    {{0x30}, 0,             TOKEN_NUMBER,               NULL,               "0"},
+    {{0x31}, 0,             TOKEN_NUMBER,               NULL,               "1"},
+    {{0x32}, 0,             TOKEN_NUMBER,               NULL,               "2"},
+    {{0x33}, 0,             TOKEN_NUMBER,               NULL,               "3"},
+    {{0x34}, 0,             TOKEN_NUMBER,               NULL,               "4"},
+    {{0x35}, 0,             TOKEN_NUMBER,               NULL,               "5"},
+    {{0x36}, 0,             TOKEN_NUMBER,               NULL,               "6"},
+    {{0x37}, 0,             TOKEN_NUMBER,               NULL,               "7"},
+    {{0x38}, 0,             TOKEN_NUMBER,               NULL,               "8"},
+    {{0x39}, 0,             TOKEN_NUMBER,               NULL,               "9"},
 
     {{0x3A}, 0,             TOKEN_OTHER,                NULL,               "."},
 
@@ -179,7 +179,7 @@ s_token *ft_token_next(unsigned char **code_ptr)
 }
 
 
-int ft_token_get_int(s_token *token)
+int ft_token_get_number(s_token *token)
 {
     return token->opcode[0]-0x30;
 }
@@ -194,10 +194,3 @@ int ft_token_is_var_std(s_token *token)
     return ((token->opcode[0] >= 0x41) && (token->opcode[0] <= 0x5B));
 }
 
-void *ft_token_get_callback(s_token *token)
-{
-    if (token->callback == NULL)
-        printf("[Error] no callback found for %x - %s\n", token->opcode[0], token->string);
-
-    return token->callback;
-}

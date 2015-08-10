@@ -6,16 +6,14 @@
 typedef enum _e_param
 {
     PARAM_FUNC,
-    PARAM_INT,
+    PARAM_NUMBER,
     PARAM_STR,
     PARAM_VAR
 }           e_param;
 
-typedef struct _s_param s_param;
-
 typedef struct              _s_function
 {
-    void(*callback)(int ac, s_param *av[]);
+    vm_function             callback;
     int                     ac;
     s_param                 **av;
     char                    *name;
@@ -26,7 +24,7 @@ struct                      _s_param
     e_param                 type;
 
     s_function              *function;
-    double                  n;
+    double                  number;
     char                    *str;
     e_var                   var;
     /* todo cond: if, while, ... */

@@ -47,8 +47,8 @@ s_param *ft_instruction_parse_tokens(s_token **tokens, int length)
 
     if (index == -1)
     {
-        if (tokens[0]->type == TOKEN_INT)
-            return ft_8xp_parse_int(tokens, length);
+        if (tokens[0]->type == TOKEN_NUMBER)
+            return ft_8xp_parse_number(tokens, length);
         else if (tokens[0]->type == TOKEN_DOUBLE_QUOTES)
             return ft_8xp_parse_str(tokens, length);
         else if (tokens[0]->type == TOKEN_VAR)
@@ -59,8 +59,8 @@ s_param *ft_instruction_parse_tokens(s_token **tokens, int length)
         {
             printf("NotImplemented (token_type=%d) (todo or error ?) -> opcode=%x\n", tokens[0]->type, tokens[0]->opcode[0]);
             s_param *ret = ft_calloc(sizeof(s_param));
-            ret->type = PARAM_INT;
-            ret->n = 42;
+            ret->type = PARAM_NUMBER;
+            ret->number = 42;
             return ret;
         }
     }

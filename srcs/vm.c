@@ -66,7 +66,7 @@ void ft_vm_refresh_screen(void)
         printf("|");
 
         if (j < 26)
-            printf(" %c %.2lf", 'A'+j, vm.var[j]);
+            printf(" %c %.2f", 'A'+j, vm.var[j]);
 
         printf("\n");
     }

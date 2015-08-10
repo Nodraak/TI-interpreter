@@ -3,7 +3,7 @@
 
 typedef enum    _e_token
 {
-    TOKEN_INT,
+    TOKEN_NUMBER,
     TOKEN_VAR,
     TOKEN_FUNC,                 /* ex: EffEcr() */
     TOKEN_FUNC_WITH_PARAM,      /* ex: Input(...) */
@@ -53,13 +53,16 @@ typedef enum    _e_var
     VAR_LAST
 }               e_var;
 
+typedef struct _s_param s_param; /* prevent circular include */
+
+typedef void (*vm_function) (int ac, s_param *av[]);
 
 typedef struct      _s_token
 {
     unsigned char   opcode[4];
     int             priority; /* operator priority */
     e_token         type;
-    void*           callback; /* for functions */
+    vm_function     callback; /* for functions */
     char            *string;
 }                   s_token;
 
@@ -75,9 +78,8 @@ extern s_token *tokens[];
 
 s_token *ft_token_next(unsigned char **code_ptr);
 
-int ft_token_get_int(s_token *token);
+int ft_token_get_number(s_token *token);
 e_var ft_token_get_var(s_token *token);
 int ft_token_is_var_std(s_token *token);
-void *ft_token_get_callback(s_token *token);
 
 #endif

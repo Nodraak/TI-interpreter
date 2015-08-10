@@ -17,15 +17,16 @@ todo
 */
 
 
-s_param *ft_8xp_parse_int(s_token **tokens, int length)
+s_param *ft_8xp_parse_number(s_token **tokens, int length)
 {
+    /* todo: parse float */
     int i;
     s_param *ret = ft_calloc(sizeof(s_param));
-    ret->type = PARAM_INT;
-    ret->n = 0;
+    ret->type = PARAM_NUMBER;
+    ret->number = 0;
 
     for (i = length-1; i >= 0; --i)
-        ret->n += ft_token_get_int(tokens[i]) * pow(10, length-1-i);
+        ret->number += ft_token_get_number(tokens[i]) * pow(10, length-1-i);
 
     return ret;
 }
@@ -152,7 +153,7 @@ s_param *ft_8xp_parse_make_function(s_token *token, int ac, s_param **av)
 
     /* function */
     function = ft_calloc(sizeof(s_function));
-    function->callback = ft_token_get_callback(token);
+    function->callback = token->callback;
     function->name = strdup(token->string);
     function->ac = ac;
     function->av = av;

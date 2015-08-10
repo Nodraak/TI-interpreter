@@ -41,8 +41,8 @@ void ft_print_sparam(s_param *param, int level)
 
     switch (param->type)
     {
-        case PARAM_INT:
-            printf("int: \"%.2lf\"\n", param->n);
+        case PARAM_NUMBER:
+            printf("int: \"%.2f\"\n", param->number);
             break;
         case PARAM_STR:
             printf("str: \"%s\"\n", param->str);
@@ -79,7 +79,7 @@ void ft_print_code(s_instruction *ptr_code)
 char *program[] = {
     "data/AATEST.8Xp",
     "data/ABC.8Xp",
-    "data/BASE.8Xp",
+    "data_save/BASE.8Xp",
     "data/WTC.8Xp",
 };
 
