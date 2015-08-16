@@ -62,7 +62,7 @@ s_instruction *ft_8xp_parse_code(unsigned char *raw_code, int code_length)
     {
         s_token *token = ft_token_next(&code_ptr);
 
-        if (token->opcode[0] == 0X3E || token->opcode[0] == 0X3F) /* next instruction */
+        if (token->opcode[0] == 0X3E || token->opcode[0] == 0X3F) // todo; this sucks too
         {
             if (ci_index != 0) /* if the instruction is not empty */
             {
@@ -111,4 +111,56 @@ void ft_8xp_append_instruction(s_instruction **list, s_instruction *elem)
 
         ptr->next = elem;
     }
+}
+
+
+s_instruction *ft_8xp_parse_conditions(s_instruction **code)
+{
+    /*
+        todo:
+        handle the Then and Else following a If
+    */
+
+    s_instruction *ret = NULL;
+
+    while (*code)
+    {
+        if (((*code)->tokens[0]->opcode[0] == 0xCE) || ((*code)->tokens[0]->opcode[0] == 0xD1)) // todo this sucks : if || while
+        {
+            s_instruction *tmp = *code;
+
+            (*code) = (*code)->next;
+            (*code) = (*code)->next; // todo: remove me when Then is handled properly. Note: in case of While or For, this skip a token
+            s_instruction *if_true = ft_8xp_parse_conditions(code);
+
+            s_condition *cond = ft_calloc(sizeof(s_condition));
+            cond->param = tmp->param;
+            cond->if_true = if_true;
+            cond->if_false = NULL;
+
+            s_param *param = ft_calloc(sizeof(s_param));
+            param->type = ((*code)->tokens[0]->opcode[0] == 0xCE) ? PARAM_CONDITION_IF : PARAM_CONDITION_WHILE;
+            param->condition = cond;
+
+            tmp->param = param;
+
+            tmp->next = NULL;
+            ft_8xp_append_instruction(&ret, tmp);
+            (*code) = (*code)->next;
+        }
+        else if ((*code)->tokens[0]->opcode[0] == 0xD4) // todo this sucks : end
+        {
+            return ret;
+        }
+        else
+        {
+            s_instruction *next = (*code)->next;
+            (*code)->next = NULL;
+            ft_8xp_append_instruction(&ret, *code);
+            (*code) = next;
+        }
+        printf("\n");
+    }
+
+    return ret;
 }

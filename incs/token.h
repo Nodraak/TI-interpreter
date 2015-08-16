@@ -8,7 +8,7 @@ typedef enum    _e_token
     TOKEN_FUNC,                 /* ex: EffEcr() */
     TOKEN_FUNC_WITH_PARAM,      /* ex: Input(...) */
     TOKEN_OP,                   /* ex: +, *, -> */
-    TOKEN_TEST,                 /* =, !=, > */
+    TOKEN_TEST,                 /* if, else, ... (=, >, ... are OP) */
     TOKEN_INCOMPLETE,
 
     TOKEN_PARENTHESIS_OPEN,

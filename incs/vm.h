@@ -7,7 +7,7 @@ typedef char pxl;
 
 typedef struct          _s_vm
 {
-    double              var[VAR_LAST];
+    double              vars[VAR_LAST];
     double              ret;
     pxl                 screen[63][95];
     /* todo xmin xmax ... */

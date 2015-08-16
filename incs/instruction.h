@@ -9,7 +9,8 @@ typedef enum _e_param
     PARAM_NUMBER,
     PARAM_STR,
     PARAM_VAR,
-    PARAM_CONDITION
+    PARAM_CONDITION_IF,
+    PARAM_CONDITION_WHILE
 }           e_param;
 
 typedef struct _s_instruction s_instruction;
@@ -25,7 +26,8 @@ typedef struct              _s_function
 typedef struct              _s_condition
 {
     s_param                 *param;
-    s_instruction           *instruction;
+    s_instruction           *if_true;
+    s_instruction           *if_false;
 }                           s_condition;
 
 struct                      _s_param

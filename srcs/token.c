@@ -68,16 +68,16 @@ s_token tokens_1[] = {
 
     {{0x63}, 0,             TOKEN_INCOMPLETE,           NULL,               "<incomplete>"},
 
-    {{0x6A}, 2,             TOKEN_TEST,                 NULL,               "="},
-    {{0x6B}, 2,             TOKEN_TEST,                 NULL,               "<"},
-    {{0x6C}, 2,             TOKEN_TEST,                 NULL,               ">"},
+    {{0x6A}, 2,             TOKEN_OP,                   NULL,               "="},
+    {{0x6B}, 2,             TOKEN_OP,                   NULL,               "<"},
+    {{0x6C}, 2,             TOKEN_OP,                   NULL,               ">"},
 
-    {{0x6F}, 2,             TOKEN_TEST,                 NULL,               "!="},
-    {{0x70}, 10,            TOKEN_OP,                   NULL,               "+"},
+    {{0x6F}, 2,             TOKEN_OP,                   ft_vm_functions_not_equal, "!="},
+    {{0x70}, 10,            TOKEN_OP,                   ft_vm_functions_add, "+"},
     {{0x71}, 10,            TOKEN_OP,                   NULL,               "-"},
 
     {{0x82}, 20,            TOKEN_OP,                   NULL,               "*"},
-    {{0x83}, 20,            TOKEN_OP,                   NULL,               "/"},
+    {{0x83}, 20,            TOKEN_OP,                   ft_vm_functions_div, "/"},
 
     {{0x85}, 0,             TOKEN_FUNC,                 NULL,               "EffDessin"},
 
@@ -88,7 +88,7 @@ s_token tokens_1[] = {
     {{0x9F}, 0,             TOKEN_FUNC_WITH_PARAM,      NULL,               "Pt-NAff"},
 
     {{0xB0}, 0,             TOKEN_FUNC,                 NULL,               "(-)"},
-    {{0xB1}, 0,             TOKEN_FUNC_WITH_PARAM,      NULL,               "partEnt("},
+    {{0xB1}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_partent, "partEnt("},
 
     {{0xB5}, 0,             TOKEN_OTHER,                NULL,               "dim("},
 
@@ -96,11 +96,11 @@ s_token tokens_1[] = {
     {{0xBB}, 0,             TOKEN_INCOMPLETE,           NULL,               "<incomplete>"},
     {{0xBC}, 0,             TOKEN_FUNC_WITH_PARAM,      NULL,               "sqrt("},
 
-    {{0xCE}, 1,             TOKEN_TEST,                 NULL,               "If"},
+    {{0xCE}, 1,             TOKEN_TEST,                 ft_vm_functions_if, "If"},
     {{0xCF}, 1,             TOKEN_TEST,                 NULL,               "Then"},
 
     {{0xD0}, 1,             TOKEN_TEST,                 NULL,               "Else"},
-    {{0xD1}, 1,             TOKEN_TEST,                 NULL,               "While"},
+    {{0xD1}, 1,             TOKEN_TEST,                 ft_vm_functions_while, "While"},
 
     {{0xD3}, 1,             TOKEN_TEST,                 NULL,               "For("},
     {{0xD4}, 1,             TOKEN_TEST,                 NULL,               "End"},
