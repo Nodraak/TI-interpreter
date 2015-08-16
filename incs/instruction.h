@@ -8,8 +8,11 @@ typedef enum _e_param
     PARAM_FUNC,
     PARAM_NUMBER,
     PARAM_STR,
-    PARAM_VAR
+    PARAM_VAR,
+    PARAM_CONDITION
 }           e_param;
+
+typedef struct _s_instruction s_instruction;
 
 typedef struct              _s_function
 {
@@ -19,6 +22,12 @@ typedef struct              _s_function
     char                    *name;
 }                           s_function;
 
+typedef struct              _s_condition
+{
+    s_param                 *param;
+    s_instruction           *instruction;
+}                           s_condition;
+
 struct                      _s_param
 {
     e_param                 type;
@@ -27,18 +36,19 @@ struct                      _s_param
     double                  number;
     char                    *str;
     e_var                   var;
-    /* todo cond: if, while, ... */
+    s_condition             *condition;
 };
 
-typedef struct              _s_instruction
+struct                      _s_instruction
 {
     s_token                 **tokens;
     int                     tokens_length;
     s_param                 *param;
 
     struct _s_instruction   *next;
-}                           s_instruction;
+};
 
+void ft_instruction_advance_while(s_token **tokens, int *i, int length, e_token type);
 int ft_instruction_split_tokens_by_priority(s_token **tokens, int length);
 s_param *ft_instruction_parse_tokens(s_token **tokens, int length);
 s_instruction *ft_instruction_parse(s_token **tokens, int length);

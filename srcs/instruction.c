@@ -10,6 +10,30 @@
 #include "instruction.h"
 
 
+void ft_instruction_advance_while(s_token **tokens, int *i, int length, e_token type)
+{
+    (*i) ++; /* skip starting token */
+
+    while ((*i < length) && (tokens[*i]->type != type))
+    {
+        /* discard instructions inside parenthesis (higher priority) or a function (param) */
+        if ((*i < length) && ((tokens[*i]->type == TOKEN_FUNC_WITH_PARAM) || (tokens[*i]->type == TOKEN_PARENTHESIS_OPEN)))
+        {
+            ft_instruction_advance_while(tokens, i, length, TOKEN_PARENTHESIS_CLOSE);
+            (*i) ++;
+        }
+        /* discard instructions inside double quotes (text) */
+        if ((*i < length) && (tokens[*i]->type == TOKEN_DOUBLE_QUOTES))
+        {
+            ft_instruction_advance_while(tokens, i, length, TOKEN_DOUBLE_QUOTES);
+            (*i) ++;
+        }
+
+        (*i) ++;
+    }
+}
+
+
 int ft_instruction_split_tokens_by_priority(s_token **tokens, int length)
 {
     int i = 0;
@@ -24,13 +48,12 @@ int ft_instruction_split_tokens_by_priority(s_token **tokens, int length)
             ret_priority = tokens[i]->priority;
         }
 
-        /* discard instructions inside parenthesis or a function */
-        if ((tokens[i]->type == TOKEN_FUNC_WITH_PARAM) || (tokens[i]->type == TOKEN_PARENTHESIS_OPEN))
-        {
-            do {
-                i ++;
-            } while ((i < length) && (tokens[i]->type != TOKEN_PARENTHESIS_CLOSE));
-        }
+        /* discard instructions inside parenthesis (higher priority) or a function (param) */
+        if ((i < length) && ((tokens[i]->type == TOKEN_FUNC_WITH_PARAM) || (tokens[i]->type == TOKEN_PARENTHESIS_OPEN)))
+            ft_instruction_advance_while(tokens, &i, length, TOKEN_PARENTHESIS_CLOSE);
+        /* discard instructions inside double quotes (text) */
+        if (((i < length)) && (tokens[i]->type == TOKEN_DOUBLE_QUOTES))
+            ft_instruction_advance_while(tokens, &i, length, TOKEN_DOUBLE_QUOTES);
     }
 
     /* if nothing to split because only a function with param */

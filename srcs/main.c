@@ -58,6 +58,16 @@ void ft_print_sparam(s_param *param, int level)
             else
                 printf("var: \"%c\"\n", 'A'+param->var);
             break;
+        case PARAM_CONDITION:
+            printf("\r");
+            ft_print_sparam(param->condition->param, level+1);
+
+            for (i = 0; i < level*4; ++i)
+                printf(" ");
+            printf("instruction: %p\n", param->condition->instruction);
+
+            break;
+
         default:
             printf("<unknown type %d (todo)>\n", param->type);
     }

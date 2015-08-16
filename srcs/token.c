@@ -68,11 +68,11 @@ s_token tokens_1[] = {
 
     {{0x63}, 0,             TOKEN_INCOMPLETE,           NULL,               "<incomplete>"},
 
-    {{0x6A}, 0,             TOKEN_OTHER,                NULL,               "="},
-    {{0x6B}, 0,             TOKEN_OTHER,                NULL,               "<"},
-    {{0x6C}, 0,             TOKEN_OTHER,                NULL,               ">"},
+    {{0x6A}, 2,             TOKEN_TEST,                 NULL,               "="},
+    {{0x6B}, 2,             TOKEN_TEST,                 NULL,               "<"},
+    {{0x6C}, 2,             TOKEN_TEST,                 NULL,               ">"},
 
-    {{0x6F}, 0,             TOKEN_OTHER,                NULL,               "!="},
+    {{0x6F}, 2,             TOKEN_TEST,                 NULL,               "!="},
     {{0x70}, 10,            TOKEN_OP,                   NULL,               "+"},
     {{0x71}, 10,            TOKEN_OP,                   NULL,               "-"},
 
@@ -96,14 +96,14 @@ s_token tokens_1[] = {
     {{0xBB}, 0,             TOKEN_INCOMPLETE,           NULL,               "<incomplete>"},
     {{0xBC}, 0,             TOKEN_FUNC_WITH_PARAM,      NULL,               "sqrt("},
 
-    {{0xCE}, 0,             TOKEN_OTHER,                NULL,               "If"},
-    {{0xCF}, 0,             TOKEN_OTHER,                NULL,               "Then"},
+    {{0xCE}, 1,             TOKEN_TEST,                 NULL,               "If"},
+    {{0xCF}, 1,             TOKEN_TEST,                 NULL,               "Then"},
 
-    {{0xD0}, 0,             TOKEN_OTHER,                NULL,               "Else"},
-    {{0xD1}, 0,             TOKEN_OTHER,                NULL,               "While"},
+    {{0xD0}, 1,             TOKEN_TEST,                 NULL,               "Else"},
+    {{0xD1}, 1,             TOKEN_TEST,                 NULL,               "While"},
 
-    {{0xD3}, 0,             TOKEN_OTHER,                NULL,               "For("},
-    {{0xD4}, 0,             TOKEN_OTHER,                NULL,               "End"},
+    {{0xD3}, 1,             TOKEN_TEST,                 NULL,               "For("},
+    {{0xD4}, 1,             TOKEN_TEST,                 NULL,               "End"},
 
     {{0xD6}, 0,             TOKEN_OTHER,                NULL,               "Lbl"},
     {{0xD7}, 0,             TOKEN_OTHER,                NULL,               "Goto"},

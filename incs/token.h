@@ -3,11 +3,12 @@
 
 typedef enum    _e_token
 {
-    TOKEN_NUMBER,
-    TOKEN_VAR,
+    TOKEN_NUMBER,               /* 0-9 */
+    TOKEN_VAR,                  /* A-Z + Omega */
     TOKEN_FUNC,                 /* ex: EffEcr() */
     TOKEN_FUNC_WITH_PARAM,      /* ex: Input(...) */
     TOKEN_OP,                   /* ex: +, *, -> */
+    TOKEN_TEST,                 /* =, !=, > */
     TOKEN_INCOMPLETE,
 
     TOKEN_PARENTHESIS_OPEN,
@@ -68,6 +69,9 @@ typedef struct      _s_token
 
 /*
 priority:
+    1 if while (special too)
+    2 != > (special)
+
     5 ->
     10 + -
     20 * /
