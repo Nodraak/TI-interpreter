@@ -51,6 +51,13 @@ typedef enum    _e_var
     VAR_Z,
     VAR_OMEGA,
 
+    VAR_XMIN,
+    VAR_XMAX,
+    VAR_XGRAD,
+    VAR_YMIN,
+    VAR_YMAX,
+    VAR_YGRAD,
+
     VAR_LAST
 }               e_var;
 
@@ -84,6 +91,6 @@ s_token *ft_token_next(unsigned char **code_ptr);
 
 int ft_token_get_number(s_token *token);
 e_var ft_token_get_var(s_token *token);
-int ft_token_is_var_std(s_token *token);
+char *ft_var_get_str(e_var var);
 
 #endif

@@ -64,10 +64,7 @@ s_param *ft_8xp_parse_var(s_token **tokens, int length)
     if (length != 1)
         ft_abort("Unexpected number of tokens");
 
-    if (ft_token_is_var_std(tokens[0]))
-        ret->var = ft_token_get_var(tokens[0]);
-    else
-        ft_abort("Unknown var");
+    ret->var = ft_token_get_var(tokens[0]);
 
     return ret;
 }

@@ -69,6 +69,7 @@ void ft_vm_execute_instruction(s_param *ptr)
     }
 }
 
+
 void ft_vm_refresh_screen(void)
 {
     int i, j;
@@ -78,7 +79,7 @@ void ft_vm_refresh_screen(void)
         printf("-");
     printf("+\n");
 
-    for (j = 0; j < 63-30; ++j)
+    for (j = 0; j < 63-20; ++j)
     {
         printf("|");
         for (i = 0; i < 95; ++i)
@@ -90,8 +91,8 @@ void ft_vm_refresh_screen(void)
         }
         printf("|");
 
-        if (j < 26)
-            printf(" %c %.2f", 'A'+j, vm.vars[j]);
+        if (j < 26+1+6) // letters + omega + {x|y}{min|max|grad}
+            printf(" %s\t%.2f", ft_var_get_str(j), vm.vars[j]);
 
         printf("\n");
     }

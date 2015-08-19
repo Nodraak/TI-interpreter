@@ -123,29 +123,21 @@ s_token tokens_2[] = {
     {{0x5d, 0x00}, 0,       TOKEN_OTHER,                NULL,                       "L1"},
     {{0x5d, 0x01}, 0,       TOKEN_OTHER,                NULL,                       "L2"},
 
-    {{0x63, 0x02}, 0,       TOKEN_OTHER,                NULL,                       "Xgrad"},
-    {{0x63, 0x03}, 0,       TOKEN_OTHER,                NULL,                       "Ygrad"},
-    {{0x63, 0x0A}, 0,       TOKEN_INCOMPLETE,           NULL,                       "<incomplete>"},
-    {{0x63, 0x0B}, 0,       TOKEN_OTHER,                NULL,                       "Xmax"},
-    {{0x63, 0x0C}, 0,       TOKEN_INCOMPLETE,           NULL,                       "<incomplete>"},
-    {{0x63, 0x0D}, 0,       TOKEN_OTHER,                NULL,                       "Ymax"},
+    {{0x63, 0x02}, 0,       TOKEN_VAR,                  NULL,                       "Xgrad"},
+    {{0x63, 0x03}, 0,       TOKEN_VAR,                  NULL,                       "Ygrad"},
+    {{0x63, 0x0A}, 0,       TOKEN_VAR,                  NULL,                       "Xmin"},
+    {{0x63, 0x0B}, 0,       TOKEN_VAR,                  NULL,                       "Xmax"},
+    {{0x63, 0x0C}, 0,       TOKEN_VAR,                  NULL,                       "Ymin"},
+    {{0x63, 0x0D}, 0,       TOKEN_VAR,                  NULL,                       "Ymax"},
 
     {{0xBB, 0x0A}, 0,       TOKEN_OTHER,                NULL,                       "entAleat("},
 
     {{0xFF, 0xFF}, 0,       TOKEN_OTHER,                NULL,                       "xx Error 2"},
 };
 
-s_token tokens_3[] = {
-    {{0x63, 0x0A, 0x3E}, 0, TOKEN_OTHER,                NULL,                       "Xmin"},
-    {{0x63, 0x0C, 0x3E}, 0, TOKEN_OTHER,                NULL,                       "Ymin"},
-
-    {{0xFF, 0xFF, 0xFF}, 0, TOKEN_OTHER,                NULL,                       "xx Error 3"},
-};
-
 s_token *tokens_data[] = {
     tokens_1,
     tokens_2,
-    tokens_3,
 };
 
 
@@ -181,16 +173,111 @@ s_token *ft_token_next(unsigned char **code_ptr)
 
 int ft_token_get_number(s_token *token)
 {
-    return token->opcode[0]-0x30;
+    if ((token->opcode[0] >= 0x30) && (token->opcode[0] <= 0x39)) // this sucks
+        return token->opcode[0] - 0x30; // this sucks
+    else if (token->opcode[0] == 0x3A)
+        return -1;
+
+    ft_abort("int not found");
+    return 0; /* silent waarning */
 }
 
 e_var ft_token_get_var(s_token *token)
 {
-    return (token->opcode[0] - 0x41);
+    if ((token->opcode[0] >= 0x41) && (token->opcode[0] <= 0x5B)) // this sucks
+       return (token->opcode[0] - 0x41);
+    else if (token->opcode[0] == 0x63)
+    {
+        switch (token->opcode[1])
+        {
+            case 0x02:
+                return VAR_XGRAD;
+                break;
+            case 0x03:
+                return VAR_YGRAD;
+                break;
+            case 0x0A:
+                return VAR_XMIN;
+                break;
+            case 0x0B:
+                return VAR_XMAX;
+                break;
+            case 0x0C:
+                return VAR_YMIN;
+                break;
+            case 0x0D:
+                return VAR_YMAX;
+                break;
+        }
+    }
+
+    ft_abort("var not found");
+    return VAR_A; /* silent waarning */
 }
 
-int ft_token_is_var_std(s_token *token)
+char *letters[] = {
+    "A",
+    "B",
+    "C",
+    "D",
+    "E",
+    "F",
+    "G",
+    "H",
+    "I",
+    "J",
+    "K",
+    "L",
+    "M",
+    "N",
+    "O",
+    "P",
+    "Q",
+    "R",
+    "S",
+    "T",
+    "U",
+    "V",
+    "W",
+    "X",
+    "Y",
+    "Z"
+};
+
+char *ft_var_get_str(e_var var)
 {
-    return ((token->opcode[0] >= 0x41) && (token->opcode[0] <= 0x5B));
-}
+    if ((var >= VAR_A) && (var <= VAR_Z))
+        return letters[var];
+    else if (var == VAR_OMEGA)
+        return "Omega";
+    else
+    {
+        switch (var)
+        {
+            case VAR_XGRAD:
+                return "Xgrad";
+                break;
+            case VAR_YGRAD:
+                return "Ygrad";
+                break;
+            case VAR_XMIN:
+                return "Xmin";
+                break;
+            case VAR_XMAX:
+                return "Xmax";
+                break;
+            case VAR_YMIN:
+                return "Ymin";
+                break;
+            case VAR_YMAX:
+                return "Ymax";
+                break;
+            default:
+                /* silent warning */
+                break;
+        }
+    }
 
+    ft_abort("var not found");
+    return ""; /* silent waarning */
+}

@@ -66,10 +66,7 @@ void ft_print_sparam(s_param *param, int level_instruction, int level)
                 ft_print_sparam(param->function->av[j], level_instruction, level+1);
             break;
         case PARAM_VAR:
-            if (param->var == VAR_OMEGA)
-                printf("var: \"Omega\"\n");
-            else
-                printf("var: \"%c\"\n", 'A'+param->var);
+            printf("var: \"%s\"\n", ft_var_get_str(param->var));
             break;
         case PARAM_CONDITION_IF:
         case PARAM_CONDITION_WHILE:

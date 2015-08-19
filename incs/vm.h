@@ -10,7 +10,6 @@ typedef struct          _s_vm
     double              vars[VAR_LAST];
     double              ret;
     pxl                 screen[63][95];
-    /* todo xmin xmax ... */
 }                       s_vm;
 
 extern s_vm vm;
