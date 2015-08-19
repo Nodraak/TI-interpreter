@@ -20,13 +20,25 @@ todo
 s_param *ft_8xp_parse_number(s_token **tokens, int length)
 {
     /* todo: parse float */
-    int i;
+    int i = 0, exponent = 0;
     s_param *ret = ft_calloc(sizeof(s_param));
     ret->type = PARAM_NUMBER;
     ret->number = 0;
 
     for (i = length-1; i >= 0; --i)
-        ret->number += ft_token_get_number(tokens[i]) * pow(10, length-1-i);
+    {
+        int n = ft_token_get_number(tokens[i]);
+
+        if (n == -1) /* got a point, ie the number is a float */
+        {
+            ret->number *= pow(10, -exponent);
+            exponent = 0;
+        }
+        else
+            ret->number += n * pow(10, exponent);
+
+        exponent += 1;
+    }
 
     return ret;
 }
