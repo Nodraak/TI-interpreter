@@ -70,7 +70,7 @@ s_token tokens_1[] = {
 
     {{0x6A}, 2,             TOKEN_OP,                   NULL,                       "="},
     {{0x6B}, 2,             TOKEN_OP,                   NULL,                       "<"},
-    {{0x6C}, 2,             TOKEN_OP,                   NULL,                       ">"},
+    {{0x6C}, 2,             TOKEN_OP,                   ft_vm_functions_greater,    ">"},
 
     {{0x6F}, 2,             TOKEN_OP,                   ft_vm_functions_not_equal,  "!="},
     {{0x70}, 10,            TOKEN_OP,                   ft_vm_functions_add,        "+"},
@@ -79,7 +79,7 @@ s_token tokens_1[] = {
     {{0x82}, 20,            TOKEN_OP,                   NULL,                       "*"},
     {{0x83}, 20,            TOKEN_OP,                   ft_vm_functions_div,        "/"},
 
-    {{0x85}, 0,             TOKEN_FUNC,                 NULL,                       "EffDessin"},
+    {{0x85}, 0,             TOKEN_FUNC,                 ft_vm_functions_effdessin,  "EffDessin"},
 
     {{0x93}, 0,             TOKEN_FUNC_WITH_PARAM,      NULL,                       "Texte"},
 
@@ -87,7 +87,7 @@ s_token tokens_1[] = {
     {{0x9E}, 0,             TOKEN_FUNC_WITH_PARAM,      NULL,                       "Pt-Aff"},
     {{0x9F}, 0,             TOKEN_FUNC_WITH_PARAM,      NULL,                       "Pt-NAff"},
 
-    {{0xB0}, 0,             TOKEN_FUNC,                 NULL,                       "(-)"},
+    {{0xB0}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_neg,        "(-)"},
     {{0xB1}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_partent,    "partEnt("},
 
     {{0xB5}, 0,             TOKEN_OTHER,                NULL,                       "dim("},

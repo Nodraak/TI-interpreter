@@ -38,6 +38,12 @@ void ft_vm_functions_effecr(int ac, s_param *av[])
     printf("in effecr todo\n");
 }
 
+void ft_vm_functions_effdessin(int ac, s_param *av[])
+{
+    (void)ac, (void)av;
+    printf("in effdessin todo\n");
+}
+
 void ft_vm_functions_disp(int ac, s_param *av[])
 {
     printf("in disp todo\n");
@@ -94,6 +100,20 @@ void ft_vm_functions_not_equal(int ac, s_param *av[])
     vm.ret = args[0] != args[1];
 }
 
+
+void ft_vm_functions_greater(int ac, s_param *av[])
+{
+    double args[2];
+
+    if (ac != 2)
+        ft_abort("SyntaxError: wrong param count");
+
+    args[0] = get_arg_value(av[0]);
+    args[1] = get_arg_value(av[1]);
+
+    vm.ret = args[0] > args[1];
+}
+
 void ft_vm_functions_partent(int ac, s_param *av[])
 {
     if (ac != 1)
@@ -126,4 +146,12 @@ void ft_vm_functions_add(int ac, s_param *av[])
     args[1] = get_arg_value(av[1]);
 
     vm.ret = args[0] + args[1];
+}
+
+void ft_vm_functions_neg(int ac, s_param *av[])
+{
+    if (ac != 1)
+        ft_abort("SyntaxError: wrong param count");
+
+    vm.ret = -get_arg_value(av[0]);
 }
