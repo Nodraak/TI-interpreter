@@ -15,7 +15,7 @@
 char *program[] = {
     "data/AATEST.8Xp",
     "data/ABC.8Xp",
-    "data_save/BASE.8Xp",
+    "data/BASE.8Xp",
     "data/WTC.8Xp",
 };
 
@@ -42,6 +42,7 @@ int main(void)
     ft_print_code(code, 0);
 
     printf("\n---------------------------------------- Execute code:\n\n");
+    ft_vm_functions_effdessin(0, NULL); // todo : ft_vm_init()
     ft_vm_execute_code(code);
 
     return 0;

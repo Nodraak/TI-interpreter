@@ -12,8 +12,6 @@ s_vm vm;
 
 void ft_vm_execute_code(s_instruction *ptr_code)
 {
-    ft_vm_functions_effdessin(0, NULL);
-
     while (ptr_code)
     {
         printf("=================================> Next instruction\n");
@@ -25,12 +23,6 @@ void ft_vm_execute_code(s_instruction *ptr_code)
     }
 }
 
-/*
-            printf("func: \"%s\" (ac=%d)\n", ptr->function->name, ptr->function->ac);
-            for (j = 0; j < ptr->function->ac; ++j)
-                ft_print_sparam(ptr->function->av[j], level+1);
-
-*/
 
 void ft_vm_execute_instruction(s_param *ptr)
 {

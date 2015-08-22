@@ -9,6 +9,15 @@
 #include "vm.h"
 #include "vm_functions.h"
 
+/*
+
+graph
+calc
+maths
+
+-> todo: scale functions (cf EceCity)
+
+*/
 
 double get_arg_value(s_param *param)
 {
@@ -63,47 +72,62 @@ void ft_vm_functions_text(int ac, s_param *av[])
 
 void set_pxl(int x, int y, int value)
 {
-    vm.screen[y][x] = value ? 'X' : ' ';
+    if (x >= 0 && x < 95 && y >= 0 && y < 63)
+        vm.screen[y][x] = value ? 'X' : ' ';
 }
 
-void hline(double x1, double x2, double y)
+void hline(double x1, double x2, double y, int colored)
 {
     double i;
-    for (i = x1; i < x2; ++i)
-        set_pxl(i, y, 1);
+    for (i = x1; i <= x2; ++i)
+        set_pxl(i, y, colored);
 }
 
-void vline(double x, double y1, double y2)
+void vline(double x, double y1, double y2, int colored)
 {
     double j;
-    for (j = y1; j < y2; ++j)
-        set_pxl(x, j, 1);
+    for (j = y1; j <= y2; ++j)
+        set_pxl(x, j, colored);
 }
 
-void line(double x1, double y1, double x2, double y2)
+void line(double x1, double y1, double x2, double y2, int colored)
 {
     if (float_equals(x1, x2))
-        vline(x1, y1, y2);
+        vline(x1, y1, y2, colored);
     else if (float_equals(y1, y2))
-        vline(x1, x2, y1);
+        hline(x1, x2, y1, colored);
     else
     {
-        ft_abort("NotImplemented");
+        // toto: maybe improve this
+        double coeff, i;
+
+        if (x1 > x2)
+        {
+            double tmp = x1;
+            x1 = x2;
+            x2 = tmp;
+        }
+        coeff = (y2-y1) / (x2-x1);
+        for (i = x1; i <= x2; ++i)
+            set_pxl(i, y1 + (i-x1)*coeff, colored);
     }
 }
 
 void ft_vm_functions_line(int ac, s_param *av[])
 {
     double args[4];
-    int i;
+    int i, colored = 1;
 
-    if (ac != 4)
+    if ((ac != 4) && (ac != 5))
         ft_abort("SyntaxError: wrong param count");
 
     for (i = 0; i < 4; ++i)
         args[i] = get_arg_value(av[i]);
 
-    line(args[0], args[1], args[2], args[3]);
+    if (ac == 5)
+        colored = 0;
+
+    line(args[0], args[1], args[2], args[3], colored);
 }
 
 void ft_vm_functions_ptaff(int ac, s_param *av[])

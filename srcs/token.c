@@ -83,7 +83,7 @@ s_token tokens_1[] = {
 
     {{0x93}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_text,       "Texte"},
 
-    {{0x9C}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_line,       "Ligne"},
+    {{0x9C}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_line,       "Ligne("},
     {{0x9E}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_ptaff,      "Pt-Aff"},
     {{0x9F}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_ptnaff,     "Pt-NAff"},
 

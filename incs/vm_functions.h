@@ -2,7 +2,7 @@
 #define VM_FUNCTIONS_H_INCLUDED
 
 #define VM_SLEEP_HACK_69 100
-#define float_equals(x, y)  (((x)-(y)) < 1.0/1000/1000)
+#define float_equals(x, y)  (abs((x)-(y)) < 1.0/1000/1000)
 
 double get_arg_value(s_param *param);
 
