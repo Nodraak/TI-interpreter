@@ -4,17 +4,22 @@
 
 #include "instruction.h"
 #include "utils.h"
+#include "vm_functions.h"
+#include "debug.h"
 #include "vm.h"
 
 s_vm vm;
 
 void ft_vm_execute_code(s_instruction *ptr_code)
 {
+    ft_vm_functions_effdessin(0, NULL);
+
     while (ptr_code)
     {
+        printf("=================================> Next instruction\n");
         ft_vm_execute_instruction(ptr_code->param);
         ft_vm_refresh_screen();
-        sleep(1);
+        usleep(1000*1000/2);
 
         ptr_code = ptr_code->next;
     }

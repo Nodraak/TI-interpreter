@@ -3,7 +3,7 @@
 NAME = a.out
 INC_DIR = incs/
 SRCS_DIR = srcs/
-SRCS =	main.c utils.c token.c 8xp.c 8xp_parse.c instruction.c vm_functions.c vm.c
+SRCS =	main.c utils.c token.c 8xp.c 8xp_parse.c instruction.c vm_functions.c vm.c debug.c
 OBJ = $(SRCS:.c=.o)
 OBJ_DIR = obj/
 INCLUDE =

@@ -6,6 +6,7 @@
 
 #include "utils.h"
 #include "instruction.h"
+#include "debug.h"
 #include "8xp_parse.h"
 
 /*

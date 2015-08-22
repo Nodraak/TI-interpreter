@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "token.h"
 #include "8xp_parse.h"
+#include "debug.h"
 #include "instruction.h"
 
 

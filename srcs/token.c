@@ -17,7 +17,7 @@ s_token tokens_1[] = {
     {{0x2A}, 0,             TOKEN_DOUBLE_QUOTES,        NULL,                       "\""},
     {{0x2B}, 0,             TOKEN_COMA,                 NULL,                       ","},
 
-    {{0x2D}, 30,            TOKEN_FUNC,                 NULL,                       "!"},
+    {{0x2D}, 30,            TOKEN_FUNC,                 ft_vm_functions_fact,       "!"},
 
     {{0x29}, 0,             TOKEN_OTHER,                NULL,                       "' '"},
     {{0x30}, 0,             TOKEN_NUMBER,               NULL,                       "0"},
@@ -81,11 +81,11 @@ s_token tokens_1[] = {
 
     {{0x85}, 0,             TOKEN_FUNC,                 ft_vm_functions_effdessin,  "EffDessin"},
 
-    {{0x93}, 0,             TOKEN_FUNC_WITH_PARAM,      NULL,                       "Texte"},
+    {{0x93}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_text,       "Texte"},
 
-    {{0x9C}, 0,             TOKEN_FUNC_WITH_PARAM,      NULL,                       "Ligne"},
-    {{0x9E}, 0,             TOKEN_FUNC_WITH_PARAM,      NULL,                       "Pt-Aff"},
-    {{0x9F}, 0,             TOKEN_FUNC_WITH_PARAM,      NULL,                       "Pt-NAff"},
+    {{0x9C}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_line,       "Ligne"},
+    {{0x9E}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_ptaff,      "Pt-Aff"},
+    {{0x9F}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_ptnaff,     "Pt-NAff"},
 
     {{0xB0}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_neg,        "(-)"},
     {{0xB1}, 0,             TOKEN_FUNC_WITH_PARAM,      ft_vm_functions_partent,    "partEnt("},
