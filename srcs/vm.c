@@ -33,6 +33,9 @@ void ft_vm_execute_instruction(s_param *ptr)
 
     switch (ptr->type)
     {
+        int ac = 0;
+        s_param **av = NULL;
+
         case PARAM_FUNC:
         case TOKEN_FUNC_WITH_PARAM:
             if (ptr->function->callback == NULL)
@@ -59,6 +62,21 @@ void ft_vm_execute_instruction(s_param *ptr)
                 ft_vm_execute_code(ptr->condition->if_true);
                 ft_vm_execute_instruction(ptr->condition->param);
             }
+            break;
+
+        case PARAM_CONDITION_FOR:
+            ac = ptr->condition->param->function->ac;
+            av = ptr->condition->param->function->av;
+
+            if ((ac != 3) && (ac != 4))
+                ft_abort("SyntaxError: wrong param count");
+
+            vm.vars[av[0]->var] = get_arg_value(av[1]);
+
+            do {
+                ft_vm_execute_code(ptr->condition->if_true);
+                ft_vm_execute_instruction(ptr->condition->param);
+            } while (vm.ret);
 
             break;
 
@@ -83,12 +101,7 @@ void ft_vm_refresh_screen(void)
     {
         printf("|");
         for (i = 0; i < 95; ++i)
-        {
-            if (vm.screen[j][i])
-                printf("X");
-            else
-                printf(" ");
-        }
+            printf("%c", vm.screen[j][i]);
         printf("|");
 
         if (j < 26+1+6) // letters + omega + {x|y}{min|max|grad}

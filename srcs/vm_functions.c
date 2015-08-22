@@ -87,6 +87,20 @@ void ft_vm_functions_while(int ac, s_param *av[])
     vm.ret = get_arg_value(av[0]);
 }
 
+void ft_vm_functions_for(int ac, s_param *av[])
+{
+    double incr = 1; /* default increment is 1 */
+
+    if ((ac != 3) && (ac != 4))
+        ft_abort("SyntaxError: wrong param count");
+
+    if (ac == 4)
+        incr = get_arg_value(av[3]);
+
+    vm.vars[av[0]->var] += incr;
+    vm.ret = vm.vars[av[0]->var] <= get_arg_value(av[2]);
+}
+
 void ft_vm_functions_not_equal(int ac, s_param *av[])
 {
     double args[2];

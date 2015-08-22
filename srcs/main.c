@@ -70,6 +70,7 @@ void ft_print_sparam(s_param *param, int level_instruction, int level)
             break;
         case PARAM_CONDITION_IF:
         case PARAM_CONDITION_WHILE:
+        case PARAM_CONDITION_FOR:
             printf("\r");
             ft_print_sparam(param->condition->param, level_instruction, level+1);
 

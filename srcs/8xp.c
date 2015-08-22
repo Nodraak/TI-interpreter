@@ -114,52 +114,107 @@ void ft_8xp_append_instruction(s_instruction **list, s_instruction *elem)
 }
 
 
+s_instruction *make_instruction(s_instruction *condition, s_instruction *if_true)
+{
+    e_param param_type;
+    s_param *param = NULL;
+
+    switch (condition->tokens[0]->opcode[0])
+    {
+        case 0xCE:
+            param_type = PARAM_CONDITION_IF;
+            break;
+        case 0xD1:
+            param_type = PARAM_CONDITION_WHILE;
+            break;
+        case 0xD3:
+            param_type = PARAM_CONDITION_FOR;
+            break;
+        default:
+            ft_abort("Error");
+            break;
+    }
+
+    param = ft_calloc(sizeof(s_param));
+    param->type = param_type;
+
+    param->condition = ft_calloc(sizeof(s_condition));
+    param->condition->param = condition->param;
+    param->condition->if_true = if_true;
+    param->condition->if_false = NULL;
+
+    condition->param = param;
+    condition->next = NULL;
+
+    return condition;
+}
+
 s_instruction *ft_8xp_parse_conditions(s_instruction **code)
 {
-    /*
-        todo:
-        handle the Then and Else following a If
-    */
-
     s_instruction *ret = NULL;
 
     while (*code)
     {
-        if (((*code)->tokens[0]->opcode[0] == 0xCE) || ((*code)->tokens[0]->opcode[0] == 0xD1)) // todo this sucks : if || while
+        /*
+            if | while
+                one ins
+
+            if | while
+            then
+                multiple ins
+            end
+
+            for
+                one or multiple ins
+            end
+
+        */
+
+        #define cmp_opcode(ins, hex) ((ins)->tokens[0]->opcode[0] == (hex))
+
+        if ((cmp_opcode(*code, 0xCE) || cmp_opcode(*code, 0xD1)) && !cmp_opcode((*code)->next, 0xCF)) // (if || while) && (code->next != then)
         {
-            s_instruction *tmp = *code;
+            s_instruction *code_cond = *code, *if_true = NULL;
+            *code = (*code)->next;
 
+            if_true = *code;
+            if_true->next = NULL; // todo fix me 1/2
+
+            ft_8xp_append_instruction(&ret, make_instruction(code_cond, if_true));
+            (*code) = (*code)->next;  // todo fix me 2/2
+        }
+        else if ((cmp_opcode(*code, 0xCE) || cmp_opcode(*code, 0xD1)) && cmp_opcode((*code)->next, 0xCF)) // (if || while) && (code->next == then)
+        {
+            s_instruction *code_cond = *code, *if_true = NULL;
+            *code = (*code)->next;
+
+            *code = (*code)->next; // skip Then
+            if_true = ft_8xp_parse_conditions(code);
+
+            ft_8xp_append_instruction(&ret, make_instruction(code_cond, if_true));
             (*code) = (*code)->next;
-            (*code) = (*code)->next; // todo: remove me when Then is handled properly. Note: in case of While or For, this skip a token
-            s_instruction *if_true = ft_8xp_parse_conditions(code);
+        }
+        else if (cmp_opcode(*code, 0xD3)) // for
+        {
+            s_instruction *code_cond = *code, *if_true = NULL;
+            *code = (*code)->next;
 
-            s_condition *cond = ft_calloc(sizeof(s_condition));
-            cond->param = tmp->param;
-            cond->if_true = if_true;
-            cond->if_false = NULL;
+            if_true = ft_8xp_parse_conditions(code);
 
-            s_param *param = ft_calloc(sizeof(s_param));
-            param->type = ((*code)->tokens[0]->opcode[0] == 0xCE) ? PARAM_CONDITION_IF : PARAM_CONDITION_WHILE;
-            param->condition = cond;
-
-            tmp->param = param;
-
-            tmp->next = NULL;
-            ft_8xp_append_instruction(&ret, tmp);
+            ft_8xp_append_instruction(&ret, make_instruction(code_cond, if_true));
             (*code) = (*code)->next;
         }
         else if ((*code)->tokens[0]->opcode[0] == 0xD4) // todo this sucks : end
         {
             return ret;
         }
-        else
+        else // standard instruction
         {
             s_instruction *next = (*code)->next;
             (*code)->next = NULL;
             ft_8xp_append_instruction(&ret, *code);
             (*code) = next;
         }
-        printf("\n");
     }
 
     return ret;

@@ -10,7 +10,8 @@ typedef enum _e_param
     PARAM_STR,
     PARAM_VAR,
     PARAM_CONDITION_IF,
-    PARAM_CONDITION_WHILE
+    PARAM_CONDITION_WHILE,
+    PARAM_CONDITION_FOR
 }           e_param;
 
 typedef struct _s_instruction s_instruction;

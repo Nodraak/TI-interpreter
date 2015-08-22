@@ -102,7 +102,7 @@ s_token tokens_1[] = {
     {{0xD0}, 1,             TOKEN_TEST,                 NULL,                       "Else"},
     {{0xD1}, 1,             TOKEN_TEST,                 ft_vm_functions_while,      "While"},
 
-    {{0xD3}, 1,             TOKEN_TEST,                 NULL,                       "For("},
+    {{0xD3}, 1,             TOKEN_TEST,                 ft_vm_functions_for,        "For("},
     {{0xD4}, 1,             TOKEN_TEST,                 NULL,                       "End"},
 
     {{0xD6}, 0,             TOKEN_OTHER,                NULL,                       "Lbl"},
