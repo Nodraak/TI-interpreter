@@ -9,14 +9,6 @@
 #include "debug.h"
 #include "8xp_parse.h"
 
-/*
-todo
-    parse_if
-    parse_while
-    ...
-
-*/
-
 
 s_param *ft_8xp_parse_number(s_token **tokens, int length)
 {
@@ -51,13 +43,13 @@ s_param *ft_8xp_parse_str(s_token **tokens, int length)
     s_param *ret = ft_calloc(sizeof(s_param));
     ret->type = PARAM_STR;
 
-    i = 1; /* skip first TOKEN_DOUBLE_QUOTES */
-    while ((i < length) && (tokens[i]->type != TOKEN_DOUBLE_QUOTES))
+    i = 1; /* skip first T_TYPE_DOUBLE_QUOTES */
+    while ((i < length) && (tokens[i]->type != T_TYPE_DOUBLE_QUOTES))
         i ++;
     str_length = i-1;
 
     if (i == length)
-        ft_abort("TOKEN_DOUBLE_QUOTES not found");
+        ft_abort("T_TYPE_DOUBLE_QUOTES not found");
 
     ret->str = ft_calloc(sizeof(char)*str_length);
     for (i = 1; i < str_length+1; ++i)
@@ -96,8 +88,8 @@ s_param *ft_8xp_parse_func_with_param(s_token *func, s_token **tokens, int lengt
 {
     s_param **av = NULL;
 
-    /* if the tokens ends with TOKEN_PARENTHESIS_CLOSE, remove it */
-    if (tokens[length-1]->type == TOKEN_PARENTHESIS_CLOSE)
+    /* if the tokens ends with T_TYPE_PARENTHESIS_CLOSE, remove it */
+    if (tokens[length-1]->type == T_TYPE_PARENTHESIS_CLOSE)
         length --;
 
     if (length == 0) /* no args, just the function call */
@@ -111,7 +103,7 @@ s_param *ft_8xp_parse_func_with_param(s_token *func, s_token **tokens, int lengt
         /* count args */
         for (i = 0; i < length; ++i)
         {
-            if (tokens[i]->type == TOKEN_COMA)
+            if (tokens[i]->type == T_TYPE_COMA)
                 nb_args ++;
         }
         nb_args ++;
@@ -122,7 +114,7 @@ s_param *ft_8xp_parse_func_with_param(s_token *func, s_token **tokens, int lengt
         for (i = 0; i < nb_args; ++i)
         {
             arg_len = 0;
-            while ((j < length) && (tokens[j]->type != TOKEN_COMA))
+            while ((j < length) && (tokens[j]->type != T_TYPE_COMA))
                 j ++, arg_len ++;
 
             if (arg_len == 0)
@@ -156,7 +148,7 @@ s_param *ft_8xp_parse_op(s_token **tokens, int length, int index)
         }
         else
         {
-            if (tokens[index]->opcode[0] == 0x2D) // todo this sucks - fact
+            if (tokens[index]->opcode[0] == T_OPCODE_FACT)
                 return ft_8xp_parse_make_function(tokens[index], 1, av);
             else
                 ft_abort("arg_len == 0, nothing to parse");

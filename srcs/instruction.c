@@ -13,22 +13,22 @@
 
 int instruction_id = 0;
 
-void ft_instruction_advance_while(s_token **tokens, int *i, int length, e_token type)
+void ft_instruction_advance_while(s_token **tokens, int *i, int length, e_t_type_type type)
 {
     (*i) ++; /* skip starting token */
 
     while ((*i < length) && (tokens[*i]->type != type))
     {
         /* discard instructions inside parenthesis (higher priority) or a function (param) */
-        if ((*i < length) && ((tokens[*i]->type == TOKEN_FUNC_WITH_PARAM) || (tokens[*i]->type == TOKEN_PARENTHESIS_OPEN)))
+        if ((*i < length) && ((tokens[*i]->type == T_TYPE_FUNC_WITH_PARAM) || (tokens[*i]->type == T_TYPE_PARENTHESIS_OPEN)))
         {
-            ft_instruction_advance_while(tokens, i, length, TOKEN_PARENTHESIS_CLOSE);
+            ft_instruction_advance_while(tokens, i, length, T_TYPE_PARENTHESIS_CLOSE);
             (*i) ++;
         }
         /* discard instructions inside double quotes (text) */
-        if ((*i < length) && (tokens[*i]->type == TOKEN_DOUBLE_QUOTES))
+        if ((*i < length) && (tokens[*i]->type == T_TYPE_DOUBLE_QUOTES))
         {
-            ft_instruction_advance_while(tokens, i, length, TOKEN_DOUBLE_QUOTES);
+            ft_instruction_advance_while(tokens, i, length, T_TYPE_DOUBLE_QUOTES);
             (*i) ++;
         }
 
@@ -52,15 +52,15 @@ int ft_instruction_split_tokens_by_priority(s_token **tokens, int length)
         }
 
         /* discard instructions inside parenthesis (higher priority) or a function (param) */
-        if ((i < length) && ((tokens[i]->type == TOKEN_FUNC_WITH_PARAM) || (tokens[i]->type == TOKEN_PARENTHESIS_OPEN)))
-            ft_instruction_advance_while(tokens, &i, length, TOKEN_PARENTHESIS_CLOSE);
+        if ((i < length) && ((tokens[i]->type == T_TYPE_FUNC_WITH_PARAM) || (tokens[i]->type == T_TYPE_PARENTHESIS_OPEN)))
+            ft_instruction_advance_while(tokens, &i, length, T_TYPE_PARENTHESIS_CLOSE);
         /* discard instructions inside double quotes (text) */
-        if (((i < length)) && (tokens[i]->type == TOKEN_DOUBLE_QUOTES))
-            ft_instruction_advance_while(tokens, &i, length, TOKEN_DOUBLE_QUOTES);
+        if (((i < length)) && (tokens[i]->type == T_TYPE_DOUBLE_QUOTES))
+            ft_instruction_advance_while(tokens, &i, length, T_TYPE_DOUBLE_QUOTES);
     }
 
     /* if nothing to split because only a function with param */
-    if (ret_index == -1 && tokens[0]->type == TOKEN_FUNC_WITH_PARAM)
+    if (ret_index == -1 && tokens[0]->type == T_TYPE_FUNC_WITH_PARAM)
         return 0;
 
     return ret_index;
@@ -76,12 +76,12 @@ s_param *ft_instruction_parse_tokens(s_token **tokens, int length)
 
     if (index == -1)
     {
-        if (tokens[0]->type == TOKEN_NUMBER)
+        if (tokens[0]->type == T_TYPE_NUMBER)
         {
             int i = 0, only_int = 1;
             for (i = 0; i < length; ++i)
             {
-                if (tokens[i]->type != TOKEN_NUMBER)
+                if (tokens[i]->type != T_TYPE_NUMBER)
                     only_int = 0;
             }
 
@@ -97,11 +97,11 @@ s_param *ft_instruction_parse_tokens(s_token **tokens, int length)
                 return ft_8xp_parse_make_function(token_times, 2, av);
             }
         }
-        else if (tokens[0]->type == TOKEN_DOUBLE_QUOTES)
+        else if (tokens[0]->type == T_TYPE_DOUBLE_QUOTES)
             return ft_8xp_parse_str(tokens, length);
-        else if (tokens[0]->type == TOKEN_VAR)
+        else if (tokens[0]->type == T_TYPE_VAR)
             return ft_8xp_parse_var(tokens, length);
-        else if (tokens[0]->type == TOKEN_FUNC)
+        else if (tokens[0]->type == T_TYPE_FUNC)
             return ft_8xp_parse_func(tokens, length);
         else
         {

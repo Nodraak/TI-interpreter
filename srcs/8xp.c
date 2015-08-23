@@ -62,7 +62,7 @@ s_instruction *ft_8xp_parse_code(unsigned char *raw_code, int code_length)
     {
         s_token *token = ft_token_next(&code_ptr);
 
-        if (token->opcode[0] == 0X3E || token->opcode[0] == 0X3F) // todo; this sucks too
+        if (token->opcode[0] == T_OPCODE_EOI_1 || token->opcode[0] == T_OPCODE_EOI_2)
         {
             if (ci_index != 0) /* if the instruction is not empty */
             {
@@ -172,29 +172,31 @@ s_instruction *ft_8xp_parse_conditions(s_instruction **code)
 
         #define cmp_opcode(ins, hex) ((ins)->tokens[0]->opcode[0] == (hex))
 
-        if ((cmp_opcode(*code, 0xCE) || cmp_opcode(*code, 0xD1)) && !cmp_opcode((*code)->next, 0xCF)) // (if || while) && (code->next != then)
+        if ((cmp_opcode(*code, T_OPCODE_IF) || cmp_opcode(*code, T_OPCODE_WHILE))
+            && !cmp_opcode((*code)->next, T_OPCODE_THEN))
         {
             s_instruction *code_cond = *code, *if_true = NULL;
             *code = (*code)->next;
 
             if_true = *code;
-            if_true->next = NULL; // todo fix me 1/2
+            if_true->next = NULL; // todo fix me 1/2 ?
 
             ft_8xp_append_instruction(&ret, make_instruction(code_cond, if_true));
-            (*code) = (*code)->next;  // todo fix me 2/2
+            (*code) = (*code)->next;  // todo fix me 2/2 ?
         }
-        else if ((cmp_opcode(*code, 0xCE) || cmp_opcode(*code, 0xD1)) && cmp_opcode((*code)->next, 0xCF)) // (if || while) && (code->next == then)
+        else if ((cmp_opcode(*code, T_OPCODE_IF) || cmp_opcode(*code, T_OPCODE_WHILE))
+            && cmp_opcode((*code)->next, T_OPCODE_THEN))
         {
             s_instruction *code_cond = *code, *if_true = NULL;
             *code = (*code)->next;
 
-            *code = (*code)->next; // skip Then
+            *code = (*code)->next; /* skip Then */
             if_true = ft_8xp_parse_conditions(code);
 
             ft_8xp_append_instruction(&ret, make_instruction(code_cond, if_true));
             (*code) = (*code)->next;
         }
-        else if (cmp_opcode(*code, 0xD3)) // for
+        else if (cmp_opcode(*code, T_OPCODE_FOR))
         {
             s_instruction *code_cond = *code, *if_true = NULL;
             *code = (*code)->next;
@@ -204,7 +206,7 @@ s_instruction *ft_8xp_parse_conditions(s_instruction **code)
             ft_8xp_append_instruction(&ret, make_instruction(code_cond, if_true));
             (*code) = (*code)->next;
         }
-        else if ((*code)->tokens[0]->opcode[0] == 0xD4) // todo this sucks : end
+        else if ((*code)->tokens[0]->opcode[0] == T_OPCODE_END)
         {
             return ret;
         }

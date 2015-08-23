@@ -34,7 +34,7 @@ void ft_vm_execute_instruction(s_param *ptr)
         s_param **av = NULL;
 
         case PARAM_FUNC:
-        case TOKEN_FUNC_WITH_PARAM:
+        case T_TYPE_FUNC_WITH_PARAM:
             if (ptr->function->callback == NULL)
             {
                 char buf[1024];

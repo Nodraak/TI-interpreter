@@ -52,7 +52,7 @@ struct                      _s_instruction
     struct _s_instruction   *next;
 };
 
-void ft_instruction_advance_while(s_token **tokens, int *i, int length, e_token type);
+void ft_instruction_advance_while(s_token **tokens, int *i, int length, e_t_type_type type);
 int ft_instruction_split_tokens_by_priority(s_token **tokens, int length);
 s_param *ft_instruction_parse_tokens(s_token **tokens, int length);
 s_instruction *ft_instruction_parse(s_token **tokens, int length);
