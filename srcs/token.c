@@ -68,15 +68,15 @@ s_token tokens_1[] = {
 
     {{0x63}, 0,             TOKEN_INCOMPLETE,           NULL,                       "<incomplete>"},
 
-    {{0x6A}, 2,             TOKEN_OP,                   NULL,                       "="},
-    {{0x6B}, 2,             TOKEN_OP,                   NULL,                       "<"},
+    {{0x6A}, 2,             TOKEN_OP,                   ft_vm_functions_equal,      "="},
+    {{0x6B}, 2,             TOKEN_OP,                   ft_vm_functions_lower,      "<"},
     {{0x6C}, 2,             TOKEN_OP,                   ft_vm_functions_greater,    ">"},
 
     {{0x6F}, 2,             TOKEN_OP,                   ft_vm_functions_not_equal,  "!="},
     {{0x70}, 10,            TOKEN_OP,                   ft_vm_functions_add,        "+"},
-    {{0x71}, 10,            TOKEN_OP,                   NULL,                       "-"},
+    {{0x71}, 10,            TOKEN_OP,                   ft_vm_functions_add,        "-"},
 
-    {{0x82}, 20,            TOKEN_OP,                   NULL,                       "*"},
+    {{0x82}, 20,            TOKEN_OP,                   ft_vm_functions_mul,        "*"},
     {{0x83}, 20,            TOKEN_OP,                   ft_vm_functions_div,        "/"},
 
     {{0x85}, 0,             TOKEN_FUNC,                 ft_vm_functions_effdessin,  "EffDessin"},

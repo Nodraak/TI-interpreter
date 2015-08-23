@@ -18,11 +18,15 @@ void ft_vm_functions_assign(int ac, s_param *av[]);
 void ft_vm_functions_if(int ac, s_param *av[]);
 void ft_vm_functions_while(int ac, s_param *av[]);
 void ft_vm_functions_for(int ac, s_param *av[]);
+void ft_vm_functions_equal(int ac, s_param *av[]);
 void ft_vm_functions_not_equal(int ac, s_param *av[]);
 void ft_vm_functions_greater(int ac, s_param *av[]);
+void ft_vm_functions_lower(int ac, s_param *av[]);
 void ft_vm_functions_partent(int ac, s_param *av[]);
 void ft_vm_functions_div(int ac, s_param *av[]);
 void ft_vm_functions_add(int ac, s_param *av[]);
+void ft_vm_functions_sub(int ac, s_param *av[]);
+void ft_vm_functions_mul(int ac, s_param *av[]);
 void ft_vm_functions_neg(int ac, s_param *av[]);
 void ft_vm_functions_fact(int ac, s_param *av[]);
 

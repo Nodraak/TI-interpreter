@@ -199,14 +199,22 @@ void ft_vm_functions_for(int ac, s_param *av[])
     vm.ret = vm.vars[av[0]->var] <= get_arg_value(av[2]);
 }
 
+void ft_vm_functions_equal(int ac, s_param *av[])
+{
+    if (ac != 2)
+        ft_abort("SyntaxError: wrong param count");
+
+    vm.ret = float_equals(get_arg_value(av[0]), get_arg_value(av[1]));
+}
+
+
 void ft_vm_functions_not_equal(int ac, s_param *av[])
 {
     if (ac != 2)
         ft_abort("SyntaxError: wrong param count");
 
-    vm.ret = !float_equals(get_arg_value(av[0]),get_arg_value(av[1]));
+    vm.ret = !float_equals(get_arg_value(av[0]), get_arg_value(av[1]));
 }
-
 
 void ft_vm_functions_greater(int ac, s_param *av[])
 {
@@ -214,6 +222,14 @@ void ft_vm_functions_greater(int ac, s_param *av[])
         ft_abort("SyntaxError: wrong param count");
 
     vm.ret = get_arg_value(av[0]) > get_arg_value(av[1]);
+}
+
+void ft_vm_functions_lower(int ac, s_param *av[])
+{
+    if (ac != 2)
+        ft_abort("SyntaxError: wrong param count");
+
+    vm.ret = get_arg_value(av[0]) < get_arg_value(av[1]);
 }
 
 void ft_vm_functions_partent(int ac, s_param *av[])
@@ -238,6 +254,22 @@ void ft_vm_functions_add(int ac, s_param *av[])
         ft_abort("SyntaxError: wrong param count");
 
     vm.ret = get_arg_value(av[0]) + get_arg_value(av[1]);
+}
+
+void ft_vm_functions_sub(int ac, s_param *av[])
+{
+    if (ac != 2)
+        ft_abort("SyntaxError: wrong param count");
+
+    vm.ret = get_arg_value(av[0]) - get_arg_value(av[1]);
+}
+
+void ft_vm_functions_mul(int ac, s_param *av[])
+{
+    if (ac != 2)
+        ft_abort("SyntaxError: wrong param count");
+
+    vm.ret = get_arg_value(av[0]) * get_arg_value(av[1]);
 }
 
 void ft_vm_functions_neg(int ac, s_param *av[])
