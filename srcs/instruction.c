@@ -11,6 +11,8 @@
 #include "instruction.h"
 
 
+int instruction_id = 0;
+
 void ft_instruction_advance_while(s_token **tokens, int *i, int length, e_token type)
 {
     (*i) ++; /* skip starting token */
@@ -67,12 +69,34 @@ int ft_instruction_split_tokens_by_priority(s_token **tokens, int length)
 
 s_param *ft_instruction_parse_tokens(s_token **tokens, int length)
 {
+    if (length == 0)
+        ft_abort("length == 0, nothing to parse");
+
     int index = ft_instruction_split_tokens_by_priority(tokens, length);
 
     if (index == -1)
     {
         if (tokens[0]->type == TOKEN_NUMBER)
-            return ft_8xp_parse_number(tokens, length);
+        {
+            int i = 0, only_int = 1;
+            for (i = 0; i < length; ++i)
+            {
+                if (tokens[i]->type != TOKEN_NUMBER)
+                    only_int = 0;
+            }
+
+            if (only_int)
+                return ft_8xp_parse_number(tokens, length);
+            else
+            {
+                s_token *token_times = ft_token_get(0x82);
+                s_param **av = ft_calloc(sizeof(s_param*)*2);
+                av[0] = ft_8xp_parse_number(tokens, length-1);
+                av[1] = ft_8xp_parse_var(&tokens[length-1], 1);
+
+                return ft_8xp_parse_make_function(token_times, 2, av);
+            }
+        }
         else if (tokens[0]->type == TOKEN_DOUBLE_QUOTES)
             return ft_8xp_parse_str(tokens, length);
         else if (tokens[0]->type == TOKEN_VAR)
@@ -107,7 +131,10 @@ s_instruction *ft_instruction_parse(s_token **tokens, int length)
     ret->tokens = memdup(tokens, length);
     ret->tokens_length = length;
     ret->param = ft_instruction_parse_tokens(tokens, length);
+    ret->instruction_id = instruction_id;
     ret->next = NULL;
+
+    instruction_id ++;
 
     return ret;
 }

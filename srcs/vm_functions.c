@@ -250,11 +250,8 @@ void ft_vm_functions_neg(int ac, s_param *av[])
 
 void ft_vm_functions_fact(int ac, s_param *av[])
 {
-    if (ac != 2)
+    if (ac != 1)
         ft_abort("SyntaxError: wrong param count");
-
-    if (get_arg_value(av[1]) != 0)
-        ft_abort("SyntaxError: unexpected param");
 
     if (get_arg_value(av[0]) == 69)
         usleep(1000*VM_SLEEP_HACK_69);

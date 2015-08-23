@@ -92,5 +92,6 @@ s_token *ft_token_next(unsigned char **code_ptr);
 int ft_token_get_number(s_token *token);
 e_var ft_token_get_var(s_token *token);
 char *ft_var_get_str(e_var var);
+s_token *ft_token_get(unsigned char opcode);
 
 #endif

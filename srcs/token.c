@@ -31,7 +31,7 @@ s_token tokens_1[] = {
     {{0x38}, 0,             TOKEN_NUMBER,               NULL,                       "8"},
     {{0x39}, 0,             TOKEN_NUMBER,               NULL,                       "9"},
 
-    {{0x3A}, 0,             TOKEN_OTHER,                NULL,                       "."},
+    {{0x3A}, 0,             TOKEN_NUMBER,               NULL,                       "."},
 
     {{0x3E}, 0,             TOKEN_OTHER,                NULL,                       ":"},
     {{0x3F}, 0,             TOKEN_OTHER,                NULL,                       ":"},
@@ -280,4 +280,16 @@ char *ft_var_get_str(e_var var)
 
     ft_abort("var not found");
     return ""; /* silent waarning */
+}
+
+
+s_token *ft_token_get(unsigned char opcode)
+{
+    int i = 0;
+
+    do {
+        i ++;
+    } while(tokens_data[0][i].opcode[0] != opcode);
+
+    return &tokens_data[0][i];
 }

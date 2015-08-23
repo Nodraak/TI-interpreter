@@ -91,6 +91,8 @@ void ft_print_code(s_instruction *ptr_code, int level_instruction)
     while (ptr_code)
     {
         printf_level_instruction(level_instruction);
+        printf("instruction_id %d\n", ptr_code->instruction_id);
+        printf_level_instruction(level_instruction);
         print_tokens(ptr_code->tokens, ptr_code->tokens_length, level_instruction);
         ft_print_sparam(ptr_code->param, level_instruction, 0);
         printf_level_instruction(level_instruction);

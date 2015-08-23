@@ -47,6 +47,7 @@ struct                      _s_instruction
     s_token                 **tokens;
     int                     tokens_length;
     s_param                 *param;
+    int                     instruction_id;
 
     struct _s_instruction   *next;
 };

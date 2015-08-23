@@ -9,6 +9,7 @@
 #include "instruction.h"
 #include "vm.h"
 #include "debug.h"
+#include "vm_functions.h"
 
 
 

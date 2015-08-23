@@ -125,6 +125,8 @@ s_param *ft_8xp_parse_func_with_param(s_token *func, s_token **tokens, int lengt
             while ((j < length) && (tokens[j]->type != TOKEN_COMA))
                 j ++, arg_len ++;
 
+            if (arg_len == 0)
+                ft_abort("arg_len == 0, nothing to parse");
             av[i] = ft_instruction_parse_tokens(tokens+j-arg_len, arg_len);
             j++;
         }
@@ -148,7 +150,18 @@ s_param *ft_8xp_parse_op(s_token **tokens, int length, int index)
         while ((j < length) && (j != index))
             j ++, arg_len ++;
 
-        av[i] = ft_instruction_parse_tokens(tokens+j-arg_len, arg_len);
+        if (arg_len != 0)
+        {
+            av[i] = ft_instruction_parse_tokens(tokens+j-arg_len, arg_len);
+        }
+        else
+        {
+            if (tokens[index]->opcode[0] == 0x2D) // todo this sucks - fact
+                return ft_8xp_parse_make_function(tokens[index], 1, av);
+            else
+                ft_abort("arg_len == 0, nothing to parse");
+        }
+
         j++;
     }
 
