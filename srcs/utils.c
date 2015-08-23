@@ -9,9 +9,9 @@
 #include "utils.h"
 
 
-void _ft_abort(char *msg, char *file, int line)
+void _ft_abort(char *msg, const char *file, const char *func, int line)
 {
-    fprintf(stderr, "In %s:%d\n", file, line);
+    fprintf(stderr, "In %s:%d - %s\n", file, line, func);
     fprintf(stderr, "Error: %s\n", msg);
     fprintf(stderr, "(Errno: %d - %s)\n", errno, strerror(errno));
     exit(1);

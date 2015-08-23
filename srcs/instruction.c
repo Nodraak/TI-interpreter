@@ -69,10 +69,12 @@ int ft_instruction_split_tokens_by_priority(s_token **tokens, int length)
 
 s_param *ft_instruction_parse_tokens(s_token **tokens, int length)
 {
+    int index = 0;
+
     if (length == 0)
         ft_abort("length == 0, nothing to parse");
 
-    int index = ft_instruction_split_tokens_by_priority(tokens, length);
+    index = ft_instruction_split_tokens_by_priority(tokens, length);
 
     if (index == -1)
     {
@@ -105,11 +107,10 @@ s_param *ft_instruction_parse_tokens(s_token **tokens, int length)
             return ft_8xp_parse_func(tokens, length);
         else
         {
-            printf("NotImplemented (token_type=%d) (todo or error ?) -> opcode=%x\n", tokens[0]->type, tokens[0]->opcode[0]);
-            s_param *ret = ft_calloc(sizeof(s_param));
-            ret->type = PARAM_NUMBER;
-            ret->number = 42;
-            return ret;
+            print_tokens(tokens, length, 0);
+            printf("T_TYPE_type=%d opcode=%x instruction_id=%d\n", tokens[0]->type, tokens[0]->opcode[0], instruction_id);
+            ft_abort("NotImplemented");
+            return NULL; /* silent warning */
         }
     }
     else if (index == 0)
