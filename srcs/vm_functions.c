@@ -20,6 +20,10 @@ maths
 
 */
 
+/*******************************************************************************
+    Private functions
+*******************************************************************************/
+
 double get_arg_value(s_param *param)
 {
     switch (param->type)
@@ -44,31 +48,15 @@ double get_arg_value(s_param *param)
     }
 }
 
-void ft_vm_functions_effecr(int ac, s_param *av[])
-{
-    (void)ac, (void)av;
-    printf("in effecr todo\n");
-}
-
-void ft_vm_functions_effdessin(int ac, s_param *av[])
+void clear_screen(void)
 {
     int i, j;
-
-    (void)ac, (void)av;
 
     for (j = 0; j < 63; ++j)
     {
         for (i = 0; i < 95; ++i)
             vm.screen[j][i] = ' ';
     }
-
-    // todo draw axis
-}
-
-void ft_vm_functions_text(int ac, s_param *av[])
-{
-    (void)ac, (void)av;
-    printf("in text todo\n");
 }
 
 void set_pxl(int x, int y, int value)
@@ -114,6 +102,30 @@ void line(double x1, double y1, double x2, double y2, int colored)
     }
 }
 
+/*******************************************************************************
+    Public functions
+*******************************************************************************/
+
+void ft_vm_functions_effecr(int ac, s_param *av[])
+{
+    (void)ac, (void)av;
+    clear_screen();
+    // todo draw cursor ?
+}
+
+void ft_vm_functions_effdessin(int ac, s_param *av[])
+{
+    (void)ac, (void)av;
+    clear_screen();
+    // todo draw axis
+}
+
+void ft_vm_functions_text(int ac, s_param *av[])
+{
+    (void)ac, (void)av;
+    printf("in text todo\n");
+}
+
 void ft_vm_functions_line(int ac, s_param *av[])
 {
     double args[4];
@@ -133,14 +145,18 @@ void ft_vm_functions_line(int ac, s_param *av[])
 
 void ft_vm_functions_ptaff(int ac, s_param *av[])
 {
-    (void)ac, (void)av;
-    printf("in ptaff todo\n");
+    if (ac != 2)
+        ft_abort("SyntaxError: wrong argument count");
+
+    set_pxl(get_arg_value(av[0]), get_arg_value(av[1]), 1); // todo debug me
 }
 
 void ft_vm_functions_ptnaff(int ac, s_param *av[])
 {
-    (void)ac, (void)av;
-    printf("in ptnaff todo\n");
+    if (ac != 2)
+        ft_abort("SyntaxError: wrong argument count");
+
+    set_pxl(get_arg_value(av[0]), get_arg_value(av[1]), 0); // todo debug me
 }
 
 void ft_vm_functions_disp(int ac, s_param *av[])
