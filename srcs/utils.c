@@ -22,7 +22,7 @@ void *ft_calloc(int size)
 {
     void *ret = calloc(1, size);
     if (ret == NULL)
-        ft_abort("malloc");
+        ft_abort("ParserError: malloc failed");
     return ret;
 }
 

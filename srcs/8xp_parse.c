@@ -48,7 +48,7 @@ s_param *ft_8xp_parse_str(s_token **tokens, int length)
     str_length = i-1;
 
     if (i == length)
-        ft_abort("T_TYPE_DOUBLE_QUOTES not found");
+        ft_abort("SyntaxError: T_TYPE_DOUBLE_QUOTES not found");
 
     ret->str = ft_calloc(sizeof(char)*str_length);
     for (i = 1; i < str_length+1; ++i)
@@ -66,7 +66,7 @@ s_param *ft_8xp_parse_var(s_token **tokens, int length)
     ret->type = PARAM_VAR;
 
     if (length != 1)
-        ft_abort("Unexpected number of tokens");
+        ft_abort("ParserError: unexpected number of tokens");
 
     ret->var = ft_token_get_var(tokens[0]);
 
@@ -77,7 +77,7 @@ s_param *ft_8xp_parse_var(s_token **tokens, int length)
 s_param *ft_8xp_parse_func(s_token **tokens, int length)
 {
     if (length != 1)
-        ft_abort("Unexpected number of tokens");
+        ft_abort("ParserError: unexpected number of tokens");
 
     return ft_8xp_parse_make_function(tokens[0], 0, NULL);
 }
@@ -117,7 +117,7 @@ s_param *ft_8xp_parse_func_with_param(s_token *func, s_token **tokens, int lengt
                 j ++, arg_len ++;
 
             if (arg_len == 0)
-                ft_abort("arg_len == 0, nothing to parse");
+                ft_abort("SyntaxError: no argument found for a function requiring (at least) one");
             av[i] = ft_instruction_parse_tokens(tokens+j-arg_len, arg_len);
             j++;
         }
@@ -150,7 +150,7 @@ s_param *ft_8xp_parse_op(s_token **tokens, int length, int index)
             if (tokens[index]->opcode[0] == T_OPCODE_FACT)
                 return ft_8xp_parse_make_function(tokens[index], 1, av);
             else
-                ft_abort("arg_len == 0, nothing to parse");
+                ft_abort("SyntaxError: no argument found for an operator requiring one");
         }
 
         j++;

@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 #include "instruction.h"
+#include "text.h"
 #include "utils.h"
 #include "vm.h"
 #include "vm_functions.h"
@@ -42,20 +43,22 @@ double get_arg_value(s_param *param)
             break;
 
         case PARAM_STR:
-            ft_abort("Can't handle PARAM_STR, use get_string() instead of get_arg_value()");
+            ft_abort("ParserError: can't handle PARAM_STR, use get_string() instead of get_arg_value()");
             break;
 
         default:
-            ft_abort("NotImplemented get_arg_value in vm_functions");
+            ft_abort("NotImplemented: get_arg_value in vm_functions");
             return 0; /* silent warning */
             break;
     }
+
+    return 0; /* silent warning */
 }
 
 char *get_string(s_param *param)
 {
     if (param->type != PARAM_STR)
-        ft_abort("Can't handle this param, try using get_arg_value() instead of get_string()");
+        ft_abort("ParserError: can't handle this param, try using get_arg_value() instead of get_string()");
 
     return param->str;
 }
@@ -215,7 +218,7 @@ void ft_vm_functions_input(int ac, s_param *av[])
         scanf("%lf", &vm.vars[av[1]->var]);
     }
     else
-        ft_abort("NotImplemented input");
+        ft_abort("NotImplemented input"); // todo
 }
 
 void ft_vm_functions_assign(int ac, s_param *av[])
@@ -223,7 +226,7 @@ void ft_vm_functions_assign(int ac, s_param *av[])
     if (ac != 2)
         ft_abort("SyntaxError: wrong argument count");
     if (av[1]->type != PARAM_VAR)
-        ft_abort("SyntaxError: wrong type");
+        ft_abort("SyntaxError: lvalue required as left operand of assignment");
 
     vm.vars[av[1]->var] = get_arg_value(av[0]);
 }
@@ -364,7 +367,7 @@ void ft_vm_functions_fact(int ac, s_param *av[])
     if (get_arg_value(av[0]) == 69)
         usleep(1000*VM_SLEEP_HACK_69);
     else
-        ft_abort("NotImplemented");
+        ft_abort("NotImplemented"); // todo
 }
 
 void ft_vm_function_pow(int ac, s_param *av[])

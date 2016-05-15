@@ -72,7 +72,7 @@ s_param *ft_instruction_parse_tokens(s_token **tokens, int length)
     int index = 0;
 
     if (length == 0)
-        ft_abort("length == 0, nothing to parse");
+        ft_abort("ParserError: length == 0, nothing to parse");
 
     index = ft_instruction_split_tokens_by_priority(tokens, length);
 
@@ -109,7 +109,7 @@ s_param *ft_instruction_parse_tokens(s_token **tokens, int length)
         {
             print_tokens(tokens, length, 0);
             printf("T_TYPE_type=%d opcode=%x instruction_id=%d\n", tokens[0]->type, tokens[0]->opcode[0], instruction_id);
-            ft_abort("NotImplemented");
+            ft_abort("NotImplementedError (ParserError)");
             return NULL; /* silent warning */
         }
     }

@@ -10,7 +10,7 @@ INCLUDE =
 LIBS = -lm
 
 CC = gcc
-CFLAGS = -g -Wall -Wextra -fdiagnostics-color=auto -I $(INC_DIR) $(INCLUDE) #-pedantic
+CFLAGS = -g -m32 -Wall -Wextra -fdiagnostics-color=auto -I $(INC_DIR) $(INCLUDE) -pedantic
 
 #=== SPECIAL ===
 .PHONY: all, clean, mrproper, re, cls

@@ -91,7 +91,7 @@ s_instruction *ft_8xp_parse_code(unsigned char *raw_code, int code_length)
             ci_index ++;
 
             if (ci_index == 128)
-                ft_abort("incomming overflow");
+                ft_abort("ParserError: incomming overflow, buffer for code is too small"); // todo fixme
         }
     }
 
@@ -104,12 +104,9 @@ s_instruction *ft_8xp_parse_code(unsigned char *raw_code, int code_length)
 
 void ft_8xp_append_instruction(s_instruction **list, s_instruction *elem)
 {
-    /* if empty instruction, skip it */
+    /* empty instructions should not happend */
     if (elem->tokens_length == 0)
-    {
-        // todo: free elem
-        return;
-    }
+        ft_abort("ParserError: unexpected empty instruction");
 
     /* empty list */
     if (*list == NULL)
@@ -146,7 +143,7 @@ s_instruction *make_instruction(s_instruction *condition, s_instruction *if_true
             param_type = PARAM_CONDITION_FOR;
             break;
         default:
-            ft_abort("Error");
+            ft_abort("ParserError: unexpected token or unhandled condition type");
             break;
     }
 
@@ -210,21 +207,12 @@ s_instruction *ft_8xp_parse_conditions(s_instruction **code)
 
             ft_8xp_append_instruction(&ret, make_instruction(code_cond, if_true));
         }
-        else if (cmp_opcode(*code, T_OPCODE_WHILE))
+        else if (cmp_opcode(*code, T_OPCODE_WHILE) || cmp_opcode(*code, T_OPCODE_FOR))
         {
             s_instruction *code_cond = *code, *if_true = NULL;
             *code = (*code)->next;
 
             if_true = ft_8xp_parse_conditions(code); // parse until End
-
-            ft_8xp_append_instruction(&ret, make_instruction(code_cond, if_true));
-        }
-        else if (cmp_opcode(*code, T_OPCODE_FOR))
-        {
-            s_instruction *code_cond = *code, *if_true = NULL;
-            *code = (*code)->next;
-
-            if_true = ft_8xp_parse_conditions(code);
 
             ft_8xp_append_instruction(&ret, make_instruction(code_cond, if_true));
         }

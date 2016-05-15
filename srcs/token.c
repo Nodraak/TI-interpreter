@@ -178,8 +178,8 @@ int ft_token_get_number(s_token *token)
     else if (token->opcode[0] == T_OPCODE_DOT)
         return -1;
 
-    ft_abort("int not found");
-    return 0; /* silent waarning */
+    ft_abort("ParserError");
+    return 0; /* silent warning */
 }
 
 e_var ft_token_get_var(s_token *token)
@@ -211,7 +211,7 @@ e_var ft_token_get_var(s_token *token)
         }
     }
 
-    ft_abort("var not found");
+    ft_abort("ParserError");
     return VAR_A; /* silent warning */
 }
 
@@ -278,8 +278,8 @@ char *ft_var_get_str(e_var var)
         }
     }
 
-    ft_abort("var not found");
-    return ""; /* silent waarning */
+    ft_abort("ParserError");
+    return ""; /* silent warning */
 }
 
 
@@ -289,7 +289,7 @@ s_token *ft_token_get(unsigned char opcode)
 
     do {
         i ++;
-    } while(tokens_data[0][i].opcode[0] != opcode);
+    } while (tokens_data[0][i].opcode[0] != opcode);
 
     return &tokens_data[0][i];
 }

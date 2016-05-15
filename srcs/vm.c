@@ -17,7 +17,7 @@ void ft_vm_execute_code(s_instruction *ptr_code)
         printf("=================================> Next instruction %d\n", ptr_code->instruction_id);
         ft_vm_execute_instruction(ptr_code->param);
         ft_vm_refresh_screen();
-        usleep(1000*1000/2);
+        usleep(1000*1000/25);
 
         ptr_code = ptr_code->next;
     }
@@ -41,6 +41,7 @@ void ft_vm_execute_instruction(s_param *ptr)
                 sprintf(buf, "no callback to call for func \"%s\"", ptr->function->name);
                 ft_abort(buf);
             }
+            // todo assert param count here ?
             ptr->function->callback(ptr->function->ac, ptr->function->av);
             break;
 
@@ -66,7 +67,7 @@ void ft_vm_execute_instruction(s_param *ptr)
             av = ptr->condition->param->function->av;
 
             if ((ac != 3) && (ac != 4))
-                ft_abort("SyntaxError: wrong param count");
+                ft_abort("SyntaxError: unexpected argument count");
 
             vm.vars[av[0]->var] = get_arg_value(av[1]);
 
@@ -79,7 +80,7 @@ void ft_vm_execute_instruction(s_param *ptr)
 
         default:
             printf("type=%d\n", ptr->type);
-            ft_abort("Oups, this should be a func, I have nothing to do here");
+            ft_abort("ParserError: expecting a function");
             break;
     }
 }
