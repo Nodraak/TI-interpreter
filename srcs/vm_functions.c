@@ -1,4 +1,5 @@
 
+#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -240,6 +241,17 @@ void ft_vm_functions_partent(int ac, s_param *av[])
     vm.ret = (int)(get_arg_value(av[0]));
 }
 
+void ft_vm_functions_partdec(int ac, s_param *av[])
+{
+    double val = 0;
+
+    if (ac != 1)
+        ft_abort("SyntaxError: wrong param count");
+
+    val = get_arg_value(av[0]);
+    vm.ret = val - (int)(val);
+}
+
 void ft_vm_functions_div(int ac, s_param *av[])
 {
     if (ac != 2)
@@ -289,4 +301,12 @@ void ft_vm_functions_fact(int ac, s_param *av[])
         usleep(1000*VM_SLEEP_HACK_69);
     else
         ft_abort("NotImplemented");
+}
+
+void ft_vm_function_pow(int ac, s_param *av[])
+{
+    if (ac != 2)
+        ft_abort("SyntaxError: wrong param count");
+
+    vm.ret = pow(get_arg_value(av[0]), get_arg_value(av[1]));
 }

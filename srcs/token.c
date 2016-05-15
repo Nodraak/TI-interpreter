@@ -92,7 +92,7 @@ s_token tokens_1[] = {
 
     {{0xB5}, 0,             T_TYPE_OTHER,                NULL,                       "dim("},
 
-    {{0xBA}, 0,             T_TYPE_FUNC_WITH_PARAM,      NULL,                       "partDec("},
+    {{0xBA}, 0,             T_TYPE_FUNC_WITH_PARAM,      ft_vm_functions_partdec,    "partDec("},
     {{0xBB}, 0,             T_TYPE_INCOMPLETE,           NULL,                       "<incomplete>"},
     {{0xBC}, 0,             T_TYPE_FUNC_WITH_PARAM,      NULL,                       "sqrt("},
 
@@ -114,7 +114,7 @@ s_token tokens_1[] = {
 
     {{0xE1}, 0,             T_TYPE_FUNC,                 ft_vm_functions_effecr,     "EffEcr"},
 
-    {{0xF0}, 30,            T_TYPE_OP,                   NULL,                       "^"},
+    {{0xF0}, 30,            T_TYPE_OP,                   ft_vm_function_pow,         "^"},
 
     {{0xFF}, 0,             T_TYPE_OTHER,                NULL,                       "xx Error 1"},
 };
