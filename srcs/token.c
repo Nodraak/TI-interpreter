@@ -9,7 +9,7 @@
 s_token tokens_1[] = {
     {{0x04}, 5,             T_TYPE_OP,                   ft_vm_functions_assign,     "->"},
 
-    {{0x0D}, 30,            T_TYPE_FUNC,                 NULL,                       "^2"},
+    {{0x0D}, 30,            T_TYPE_FUNC,                 ft_vm_function_square,      "^2"},
 
     {{0x10}, 0,             T_TYPE_PARENTHESIS_OPEN,     NULL,                       "("},
     {{0x11}, 0,             T_TYPE_PARENTHESIS_CLOSE,    NULL,                       ")"}  ,
@@ -94,7 +94,7 @@ s_token tokens_1[] = {
 
     {{0xBA}, 0,             T_TYPE_FUNC_WITH_PARAM,      ft_vm_functions_partdec,    "partDec("},
     {{0xBB}, 0,             T_TYPE_INCOMPLETE,           NULL,                       "<incomplete>"},
-    {{0xBC}, 0,             T_TYPE_FUNC_WITH_PARAM,      NULL,                       "sqrt("},
+    {{0xBC}, 0,             T_TYPE_FUNC_WITH_PARAM,      ft_vm_function_sqrt,        "sqrt("},
 
     {{0xCE}, 1,             T_TYPE_TEST,                 ft_vm_functions_if,         "If"},
     {{0xCF}, 1,             T_TYPE_TEST,                 NULL,                       "Then"},

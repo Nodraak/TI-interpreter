@@ -326,3 +326,19 @@ void ft_vm_function_pow(int ac, s_param *av[])
 
     vm.ret = pow(get_arg_value(av[0]), get_arg_value(av[1]));
 }
+
+void ft_vm_function_square(int ac, s_param *av[])
+{
+    if (ac != 1)
+        ft_abort("SyntaxError: wrong argument count");
+
+    vm.ret = get_arg_value(av[0]) * get_arg_value(av[0]);
+}
+
+void ft_vm_function_sqrt(int ac, s_param *av[])
+{
+    if (ac != 1)
+        ft_abort("SyntaxError: wrong argument count");
+
+    vm.ret = sqrt(get_arg_value(av[0]));
+}

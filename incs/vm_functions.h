@@ -52,5 +52,7 @@ void ft_vm_functions_mul(int ac, s_param *av[]);
 void ft_vm_functions_neg(int ac, s_param *av[]);
 void ft_vm_functions_fact(int ac, s_param *av[]);
 void ft_vm_function_pow(int ac, s_param *av[]);
+void ft_vm_function_square(int ac, s_param *av[]);
+void ft_vm_function_sqrt(int ac, s_param *av[]);
 
 #endif
