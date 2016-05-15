@@ -41,11 +41,23 @@ double get_arg_value(s_param *param)
             return vm.ret;
             break;
 
+        case PARAM_STR:
+            ft_abort("Can't handle PARAM_STR, use get_string() instead of get_arg_value()");
+            break;
+
         default:
             ft_abort("NotImplemented get_arg_value in vm_functions");
             return 0; /* silent warning */
             break;
     }
+}
+
+char *get_string(s_param *param)
+{
+    if (param->type != PARAM_STR)
+        ft_abort("Can't handle this param, try using get_arg_value() instead of get_string()");
+
+    return param->str;
 }
 
 void clear_screen(void)
@@ -122,8 +134,38 @@ void ft_vm_functions_effdessin(int ac, s_param *av[])
 
 void ft_vm_functions_text(int ac, s_param *av[])
 {
-    (void)ac, (void)av;
-    printf("in text todo\n");
+    char *str = NULL;
+    int str_i = 0;
+    int i = 0, j = 0;
+    int x = 0, y = 0;
+
+    if (ac != 3)
+        ft_abort("SyntaxError: wrong argument count");
+
+    y = get_arg_value(av[0]);
+    x = get_arg_value(av[1]);
+    str = get_string(av[2]);
+
+    for (str_i = 0; str[str_i] != '\0'; ++str_i)
+    {
+        for (j = 0; j < 5; ++j)
+        {
+            for (i = 0; i < 3; ++i)
+            {
+                if (str[str_i] >= 'A' && str[str_i] <= 'Z')
+                    set_pxl(x+i, 63-1-(y+j), text_get_letter_pixel(str[str_i], j, i));
+                else if (str[str_i] >= '0' && str[str_i] <= '9')
+                    set_pxl(x+i, 63-1-(y+j), text_get_number_pixel(str[str_i], j, i));
+                else
+                    ; // space
+            }
+        }
+
+        if ((str[str_i] >= 'A' && str[str_i] <= 'Z') || (str[str_i] >= '0' && str[str_i] <= '9'))
+            x += 4;
+        else
+            x ++; // space
+    }
 }
 
 void ft_vm_functions_line(int ac, s_param *av[])

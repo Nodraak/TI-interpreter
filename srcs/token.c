@@ -212,7 +212,7 @@ e_var ft_token_get_var(s_token *token)
     }
 
     ft_abort("var not found");
-    return VAR_A; /* silent waarning */
+    return VAR_A; /* silent warning */
 }
 
 char *letters[] = {

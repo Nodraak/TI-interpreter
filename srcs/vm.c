@@ -89,14 +89,19 @@ void ft_vm_refresh_screen(void)
 {
     int i, j;
 
-    printf("+");
-    for (i = 0; i < 95; ++i)
-        printf("-");
+    printf("    ");
+    for (i = 1; i <= 9; ++i)
+        printf("        %2d", i*10);
+    printf("\n");
+
+    printf("  +");
+    for (i = 1; i <= 95; ++i)
+        printf("%c", i%10==0 ? '+' : '-');
     printf("+\n");
 
-    for (j = 0; j < 63-20; ++j)
+    for (j = 63-1; j >= 0; --j)
     {
-        printf("|");
+        printf("%02d|", j);
         for (i = 0; i < 95; ++i)
             printf("%c", vm.screen[j][i]);
         printf("|");
@@ -107,12 +112,10 @@ void ft_vm_refresh_screen(void)
         printf("\n");
     }
 
-    /*
-    printf("+");
+    printf("  +");
     for (i = 0; i < 95; ++i)
         printf("-");
     printf("+\n");
-    */
 
     printf("\n");
 }
