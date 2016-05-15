@@ -190,7 +190,7 @@ void ft_vm_functions_ptaff(int ac, s_param *av[])
     if (ac != 2)
         ft_abort("SyntaxError: wrong argument count");
 
-    set_pxl(get_arg_value(av[0]), get_arg_value(av[1]), 1); // todo debug me
+    set_pxl(get_arg_value(av[0]), get_arg_value(av[1]), 1);
 }
 
 void ft_vm_functions_ptnaff(int ac, s_param *av[])
@@ -198,7 +198,7 @@ void ft_vm_functions_ptnaff(int ac, s_param *av[])
     if (ac != 2)
         ft_abort("SyntaxError: wrong argument count");
 
-    set_pxl(get_arg_value(av[0]), get_arg_value(av[1]), 0); // todo debug me
+    set_pxl(get_arg_value(av[0]), get_arg_value(av[1]), 0);
 }
 
 void ft_vm_functions_disp(int ac, s_param *av[])
@@ -246,16 +246,22 @@ void ft_vm_functions_while(int ac, s_param *av[])
 
 void ft_vm_functions_for(int ac, s_param *av[])
 {
-    double incr = 1; /* default increment is 1 */
+    double incr = 0;
 
     if ((ac != 3) && (ac != 4))
         ft_abort("SyntaxError: wrong argument count");
 
     if (ac == 4)
         incr = get_arg_value(av[3]);
+    else
+        incr = 1; /* default increment is 1 */
 
     vm.vars[av[0]->var] += incr;
-    vm.ret = vm.vars[av[0]->var] <= get_arg_value(av[2]);
+
+    if (incr > 0)
+        vm.ret = vm.vars[av[0]->var] <= get_arg_value(av[2]);
+    else
+        vm.ret = vm.vars[av[0]->var] >= get_arg_value(av[2]);
 }
 
 void ft_vm_functions_equal(int ac, s_param *av[])
