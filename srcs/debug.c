@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "utils.h"
 #include "debug.h"
 
 
@@ -81,7 +82,7 @@ void ft_print_sparam(s_param *param, int level_instruction, int level)
             break;
 
         default:
-            printf("<unknown type %d (todo)>\n", param->type);
+            ft_abort("Unknown param_type");
     }
 }
 

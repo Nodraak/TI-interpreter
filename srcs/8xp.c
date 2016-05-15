@@ -8,6 +8,18 @@
 #include "8xp.h"
 
 
+char *file_type[] = {
+    "Real number",
+    "List",
+    "Matrix",
+    "Y-var or equ",
+    "String",
+    "Program",
+    "Assembler",
+    "Picture",
+    "Gdb"
+};
+
 unsigned char *ft_8xp_read_code(char *file, int *code_length)
 {
     FILE *f = NULL;
@@ -27,12 +39,15 @@ unsigned char *ft_8xp_read_code(char *file, int *code_length)
     ft_fread(buf, 40, f);
     printf("date: %s\n", buf);
 
-    ft_fread(buf, 9, f); /* unknown */
+    ft_fread(buf, 8, f); /* unknown */
 
-    ft_fread(buf, 6, f);
+    ft_fread(buf, 1, f);
+    printf("File type: %s\n", file_type[buf[0]]);
+
+    ft_fread(buf, 7, f);
     printf("name: %s\n", buf);
 
-    ft_fread(buf, 8, f); /* unknown */
+    ft_fread(buf, 7, f); /* unknown */
 
     /* read code */
     fseek(f, 0, SEEK_END);
@@ -172,29 +187,37 @@ s_instruction *ft_8xp_parse_conditions(s_instruction **code)
 
         #define cmp_opcode(ins, hex) ((ins)->tokens[0]->opcode[0] == (hex))
 
-        if ((cmp_opcode(*code, T_OPCODE_IF) || cmp_opcode(*code, T_OPCODE_WHILE))
-            && !cmp_opcode((*code)->next, T_OPCODE_THEN))
+        if (cmp_opcode(*code, T_OPCODE_IF))
         {
             s_instruction *code_cond = *code, *if_true = NULL;
             *code = (*code)->next;
 
-            if_true = *code;
-            if_true->next = NULL; // todo fix me 1/2 ?
+            if (cmp_opcode(*code, T_OPCODE_THEN))
+            {
+                *code = (*code)->next; /* skip Then */
+
+                if_true = ft_8xp_parse_conditions(code); /* parse until End */
+            }
+            else
+            {
+                s_instruction *next = (*code)->next; /* get first instruction outside the If */
+
+                if_true = *code;
+                if_true->next = NULL; /* maybe I should copy this shit instead */
+
+                *code = next;
+            }
 
             ft_8xp_append_instruction(&ret, make_instruction(code_cond, if_true));
-            (*code) = (*code)->next;  // todo fix me 2/2 ?
         }
-        else if ((cmp_opcode(*code, T_OPCODE_IF) || cmp_opcode(*code, T_OPCODE_WHILE))
-            && cmp_opcode((*code)->next, T_OPCODE_THEN))
+        else if (cmp_opcode(*code, T_OPCODE_WHILE))
         {
             s_instruction *code_cond = *code, *if_true = NULL;
             *code = (*code)->next;
 
-            *code = (*code)->next; /* skip Then */
-            if_true = ft_8xp_parse_conditions(code);
+            if_true = ft_8xp_parse_conditions(code); // parse until End
 
             ft_8xp_append_instruction(&ret, make_instruction(code_cond, if_true));
-            (*code) = (*code)->next;
         }
         else if (cmp_opcode(*code, T_OPCODE_FOR))
         {
@@ -204,10 +227,10 @@ s_instruction *ft_8xp_parse_conditions(s_instruction **code)
             if_true = ft_8xp_parse_conditions(code);
 
             ft_8xp_append_instruction(&ret, make_instruction(code_cond, if_true));
-            (*code) = (*code)->next;
         }
         else if ((*code)->tokens[0]->opcode[0] == T_OPCODE_END)
         {
+            *code = (*code)->next;
             return ret;
         }
         else // standard instruction

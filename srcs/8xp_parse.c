@@ -12,7 +12,6 @@
 
 s_param *ft_8xp_parse_number(s_token **tokens, int length)
 {
-    /* todo: parse float */
     int i = 0, exponent = 0;
     s_param *ret = ft_calloc(sizeof(s_param));
     ret->type = PARAM_NUMBER;

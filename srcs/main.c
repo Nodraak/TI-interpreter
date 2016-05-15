@@ -13,22 +13,20 @@
 
 
 
-char *program[] = {
-    "data/AATEST.8Xp",
-    "data/ABC.8Xp",
-    "data/BASE.8Xp",
-    "data/WTC.8Xp",
-};
-
-
-int main(void)
+int main(int ac, char *av[])
 {
     unsigned char *raw_code = NULL;
     int code_length;
     s_instruction *code = NULL;
 
+    if (ac != 2)
+    {
+        printf("Usage: %s FILE\n", av[0]);
+        exit(1);
+    }
+
     printf("\n---------------------------------------- Read code:\n\n");
-    raw_code = ft_8xp_read_code(program[2], &code_length);
+    raw_code = ft_8xp_read_code(av[1], &code_length);
 
     printf("\n---------------------------------------- Parse code:\n\n");
     code = ft_8xp_parse_code(raw_code, code_length);
