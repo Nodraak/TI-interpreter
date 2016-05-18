@@ -19,6 +19,10 @@ void ft_instruction_advance_while(s_token **tokens, int *i, int length, e_t_type
 
     while ((*i < length) && (tokens[*i]->type != type))
     {
+        /* ugly hack to interpret "foo(42->A" as "foo(42)->A" instead of "foo(42->A)" */
+        if (tokens[*i]->opcode[0] == T_OPCODE_ASSIGN)
+            return;
+
         /* discard instructions inside parenthesis (higher priority) or a function (param) */
         if ((*i < length) && ((tokens[*i]->type == T_TYPE_FUNC_WITH_PARAM) || (tokens[*i]->type == T_TYPE_PARENTHESIS_OPEN)))
         {
@@ -45,6 +49,11 @@ int ft_instruction_split_tokens_by_priority(s_token **tokens, int length)
 
     for (i = 0; i < length; ++i)
     {
+        /* ugly hack to interpret "foo(42->A" as "foo(42)->A" instead of "foo(42->A)" */
+        if (tokens[i]->opcode[0] == T_OPCODE_ASSIGN)
+            return i;
+
+        /* update highest priority with current token if needed */
         if ((tokens[i]->priority != 0) && (tokens[i]->priority < ret_priority))
         {
             ret_index = i;

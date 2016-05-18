@@ -10,12 +10,20 @@
 
 s_vm vm;
 
+
+void ft_vm_init(void)
+{
+    clear_screen();
+}
+
+
 void ft_vm_execute_code(s_instruction *ptr_code)
 {
     while (ptr_code)
     {
         printf("=================================> Next instruction %d\n", ptr_code->instruction_id);
         ft_vm_execute_instruction(ptr_code->param);
+        system("clear");
         ft_vm_refresh_screen();
         usleep(1000*1000/25);
 
