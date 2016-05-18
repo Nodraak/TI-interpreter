@@ -1,0 +1,16 @@
+#
+# Magic Numbers for the TI-83+
+#
+0               string          **TI83F*        TI-83+ Graphing Calculator
+>0x00003B   byte        0x00        (real number)
+>0x00003B   byte        0x01        (list)
+>0x00003B   byte        0x02        (matrix)
+>0x00003B   byte        0x03        (Y-var or equ)
+>0x00003B   byte        0x04        (string)
+>0x00003B   byte        0x05        (program)
+>0x00003B   byte        0x06        (assembler)
+>0x00003B   byte        0x07        (picture)
+>0x00003B   byte        0x08        (gdb)
+>0x00003B   byte        0x0C        (complex number)
+
+

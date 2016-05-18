@@ -1,0 +1,37 @@
+AATEST
+    While 1
+    Then
+    Disp "A"
+    Disp "B"
+    End
+    .
+ABC
+    5->N
+    40->Q
+    40->R
+    .
+    1->Xmin:95->Xmax
+    1->Ymax:63->Ymax
+    100->Xgrad
+    100->Ygrad
+    EffDessin
+    .
+    N->dim(L1
+    N->dim(L2
+    .
+    entAleat(1,Q,N)->L1
+    entAleat(1,R,N)->L2
+    .
+    10->L1(1)
+    10->L1(2)
+    2->L2(1)
+    5->L1(2)
+    .
+    .
+    For(X,1,N
+    Pt-Aff(L1(X),L2(X))
+    End
+    .
+    10000->D
+    1->A
+    ...
