@@ -12,7 +12,7 @@ s_token tokens_1[] = {
     {{0x0D}, 30,            T_TYPE_FUNC,                 ft_vm_function_square,      "^2"},
 
     {{0x10}, 0,             T_TYPE_PARENTHESIS_OPEN,     NULL,                       "("},
-    {{0x11}, 0,             T_TYPE_PARENTHESIS_CLOSE,    NULL,                       ")"}  ,
+    {{0x11}, 0,             T_TYPE_PARENTHESIS_CLOSE,    NULL,                       ")"},
 
     {{0x2A}, 0,             T_TYPE_DOUBLE_QUOTES,        NULL,                       "\""},
     {{0x2B}, 0,             T_TYPE_COMA,                 NULL,                       ","},
