@@ -9,8 +9,9 @@
 */
 
 double get_arg_value(s_param *param); /* needed by vm.c */
+void clear_screen(void); /* needed by vm.c */
+
 /*
-void clear_screen(void);
 void set_pxl(int x, int y, int value);
 void hline(double x1, double x2, double y, int colored);
 void vline(double x, double y1, double y2, int colored);
