@@ -41,6 +41,20 @@ def eigthxp_read_code(filename):
 
         return code
 
+"""
+priority:
+    0 default
+    1 if while (special too)
+    2 != > (special)
+
+    5 ->
+    6 functions with param
+    7 ,
+    10 + -
+    20 * /
+    30 ^ !
+
+"""
 
 class Token(object):
     def __init__(self, priority, callback, string):
@@ -49,7 +63,7 @@ class Token(object):
         self.string = string
 
     def __repr__(self):
-        return '<%s %s>' % (type(self), self.string)
+        return '<%s "%s">' % (self.__class__.__name__, self.string)
 
 class TFunc(Token):
     pass
@@ -58,6 +72,9 @@ class TNumber(Token):
     pass
 
 class TVar(Token):
+    pass
+
+class TString(Token):
     pass
 
 class TOp(Token):
@@ -75,6 +92,18 @@ class TFuncWithParam(Token):
 class TTest(Token):
     pass
 
+class TDoubleQuotes(Token):
+    pass
+
+class TParenthesisOpen(Token):
+    pass
+
+class TParenthesisClose(Token):
+    pass
+
+class TComma(Token):
+    pass
+
 class TOther(Token):
     pass
 
@@ -83,11 +112,11 @@ tokens = {
     0x04: TAssign(priority=5, callback='ft_vm_functions_assign', string='->'),
     0x0D: TFunc(priority=30, callback='ft_vm_function_square', string='^2'),
 
-    0x10: TOther(priority=0, callback='NULL', string='('),
-    0x11: TOther(priority=0, callback='NULL', string=')'),
+    0x10: TParenthesisOpen(priority=0, callback='NULL', string='('),
+    0x11: TParenthesisClose(priority=0, callback='NULL', string=')'),
 
-    0x2A: TOther(priority=0, callback='NULL', string='"'),
-    0x2B: TOther(priority=0, callback='NULL', string=','),
+    0x2A: TDoubleQuotes(priority=0, callback='NULL', string='"'),
+    0x2B: TComma(priority=7, callback='NULL', string=','),
 
     0x2D: TFunc(priority=30, callback='ft_vm_functions_fact', string='!'),
 
@@ -153,20 +182,20 @@ tokens = {
 
     0x85: TFunc(priority=0, callback='ft_vm_functions_effdessin', string='EffDessin'),
 
-    0x93: TFuncWithParam(priority=0, callback='ft_vm_functions_text', string='Texte'),
+    0x93: TFuncWithParam(priority=6, callback='ft_vm_functions_text', string='Texte('),
 
-    0x9C: TFuncWithParam(priority=0, callback='ft_vm_functions_line', string='Ligne('),
-    0x9E: TFuncWithParam(priority=0, callback='ft_vm_functions_ptaff', string='Pt-Aff'),
-    0x9F: TFuncWithParam(priority=0, callback='ft_vm_functions_ptnaff', string='Pt-NAff'),
+    0x9C: TFuncWithParam(priority=6, callback='ft_vm_functions_line', string='Ligne('),
+    0x9E: TFuncWithParam(priority=6, callback='ft_vm_functions_ptaff', string='Pt-Aff('),
+    0x9F: TFuncWithParam(priority=6, callback='ft_vm_functions_ptnaff', string='Pt-NAff'),
 
-    0xB0: TFuncWithParam(priority=0, callback='ft_vm_functions_neg', string='(-)'),
-    0xB1: TFuncWithParam(priority=0, callback='ft_vm_functions_partent', string='partEnt('),
+    0xB0: TFuncWithParam(priority=6, callback='ft_vm_functions_neg', string='(-)'),
+    0xB1: TFuncWithParam(priority=6, callback='ft_vm_functions_partent', string='partEnt('),
 
-    0xB5: TFuncWithParam(priority=0, callback='NULL', string='dim('),
+    0xB5: TFuncWithParam(priority=6, callback='NULL', string='dim('),
 
-    0xBA: TFuncWithParam(priority=0, callback='ft_vm_functions_partdec', string='partDec('),
+    0xBA: TFuncWithParam(priority=6, callback='ft_vm_functions_partdec', string='partDec('),
 #0xBB: Token_INCOMPLETE(priority=0, callback='NULL', string='<incomplete>'),
-    0xBC: TFuncWithParam(priority=0, callback='ft_vm_function_sqrt', string='sqrt('),
+    0xBC: TFuncWithParam(priority=6, callback='ft_vm_function_sqrt', string='sqrt('),
 
     0xCE: TTest(priority=1, callback='ft_vm_functions_if', string='If'),
     0xCF: TTest(priority=1, callback='NULL', string='Then'),
@@ -180,9 +209,9 @@ tokens = {
     0xD6: TOther(priority=0, callback='NULL', string='Lbl'),
     0xD7: TOther(priority=0, callback='NULL', string='Goto'),
 
-    0xDC: TFuncWithParam(priority=0, callback='ft_vm_functions_input', string='Input('),
+    0xDC: TFuncWithParam(priority=6, callback='ft_vm_functions_input', string='Input('),
 
-    0xDE: TFuncWithParam(priority=0, callback='ft_vm_functions_disp', string='Disp'),
+    0xDE: TFuncWithParam(priority=6, callback='ft_vm_functions_disp', string='Disp('),
 
     0xE1: TFunc(priority=0, callback='ft_vm_functions_effecr', string='EffEcr'),
 
@@ -198,7 +227,7 @@ tokens = {
     (0x63, 0x0C): TVar(priority=0, callback='NULL', string='Ymin'),
     (0x63, 0x0D): TVar(priority=0, callback='NULL', string='Ymax'),
 
-    (0xBB, 0x0A): TFuncWithParam(priority=0, callback='NULL', string='entAleat('),
+    (0xBB, 0x0A): TFuncWithParam(priority=6, callback='NULL', string='entAleat('),
 }
 
 
@@ -207,7 +236,7 @@ class Tokenizer(object):
         self.code = code
 
     def __iter__(self):
-        generator = iter(code)
+        generator = iter(self.code)
         for byte in generator:
             try:
                 yield tokens[byte]
@@ -215,18 +244,120 @@ class Tokenizer(object):
                 yield tokens[(byte, generator.next())]
 
 
-class Parser(object):
-    def __init__(self, tokens):
-        self.tokens = tokens
 
-    def __iter__(self):
-        ret = []
-        for token in self.tokens:
-            if isinstance(token, TEndOfInstruction):
-                yield ret
-                ret = []
+def parse_instruction(tokens):
+    if len(tokens) == 0:
+        raise ValueError('token list to parse is empty')
+
+    if len(tokens) == 1:
+        return -1
+
+    ret_index = -1
+    ret_priority = 100
+    in_parenthesis = 0
+    in_text = False
+    for i, t in enumerate(tokens):
+        if not isinstance(t, TAssign):
+            if isinstance(t, TParenthesisOpen) or isinstance(t, TFuncWithParam):
+                in_parenthesis += 1
+                continue
+            if isinstance(t, TDoubleQuotes):
+                in_text = not in_text
+                continue
+            if isinstance(t, TParenthesisClose):
+                in_parenthesis -= 1
+                continue
+
+            if in_text or in_parenthesis:
+                continue
+
+        if (t.priority != 0) and (t.priority < ret_priority):
+            ret_priority = t.priority
+            ret_index = i
+
+    if in_text:
+        raise ValueError('Missing double quotes')
+
+    if (in_parenthesis > 0) and (not isinstance(tokens[ret_index], TAssign)):
+        print 'Warning: missing closing parenthesis, forgiving'
+        return 0
+
+    return ret_index
+
+
+def parse_int(tokens):
+    ret = 0
+    for t in tokens:
+        if not isinstance(t, TNumber):
+            raise ValueError('Unexpected non TNumber token')
+
+        ret = ret*10 + int(t.string)
+
+    return ret
+
+
+def split_by_class(tokens, delim):
+    ret = []
+    tmp = []
+    for t in tokens:
+        if isinstance(t, delim):
+            if tmp:
+                ret.append(tmp)
+                tmp = []
+        else:
+            tmp.append(t)
+    if tmp:
+        ret.append(tmp)
+    return ret
+
+
+class Instruction(object):
+    def __init__(self, tokens):
+        # print 'Instruction():', tokens
+
+        if len(tokens) == 1:
+            self.token = tokens[0]
+            self.children = []
+        else:
+            i = parse_instruction(tokens)
+            if i == -1:
+                if all([isinstance(t, TNumber) for t in tokens]):
+                    self.token = TNumber(priority=-1, callback=None, string=parse_int(tokens))
+                    self.children = []
+                elif isinstance(tokens[0], TDoubleQuotes) and isinstance(tokens[-1], TDoubleQuotes):
+                    text = ''.join([t.string for t in tokens[1:-1]])
+                    self.token = TString(priority=-1, callback=None, string=text)
+                    self.children = []
+                elif isinstance(tokens[0], TFuncWithParam):
+                    missing_closin_parenthesis = sum([isinstance(t, TParenthesisClose) for t in tokens]) \
+                        - sum([isinstance(t, TParenthesisOpen) for t in tokens]) \
+                        - sum([isinstance(t, TFuncWithParam) for t in tokens])
+
+                    tokens.extend([TParenthesisClose(priority=0, callback='NULL', string=')')]*missing_closin_parenthesis)
+
+                    self.token = tokens[0]
+                    self.children = [Instruction(sub_tokens) for sub_tokens in split_by_class(tokens[1:-1], TComma)]
+                else:
+                    print tokens
+                    raise ValueError('parse_instruction returned -1, but I dont how to parse these bytes')
+            elif i == 0:
+                self.token = tokens[0]
+                self.children = [
+                    Instruction(tokens[1:]),
+                ]
             else:
-                ret.append(token)
+                self.token = tokens[i]
+                self.children = [
+                    Instruction(tokens[:i]),
+                    Instruction(tokens[i+1:]),
+                ]
+
+    def dump(self, i):
+        if i == 0:
+            print 'dump:'
+        print '\t'*i + str(self.token)
+        for c in self.children:
+            c.dump(i+1)
 
 
 def main():
@@ -236,11 +367,13 @@ def main():
 
     code = eigthxp_read_code(sys.argv[1])
 
-    token_list = Tokenizer(code)
+    token_list = Tokenizer(code)  # actually, ByteReader
 
-    for instruction in Parser(token_list):
-        print instruction
-
+    print '---'
+    for tokens in split_by_class(token_list, TEndOfInstruction):  # actually Lexer / Tokenizer
+        print ''.join([t.string for t in tokens])
+        Instruction(tokens).dump(0)
+        print '---'
 
 if __name__ == '__main__':
     main()
