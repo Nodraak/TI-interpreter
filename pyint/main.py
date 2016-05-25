@@ -277,8 +277,9 @@ def parse_instruction(tokens):
     if in_text:
         raise ValueError('Missing double quotes')
 
-    if (in_parenthesis > 0) and (not isinstance(tokens[ret_index], TAssign)):
-        print 'Warning: missing closing parenthesis, forgiving'
+    if (in_parenthesis > 0) and (ret_index != -1):
+        print 'Warning: missing closing parenthesis, forgiving:'
+        print '\t', tokens
         return 0
 
     return ret_index
@@ -328,11 +329,12 @@ class Instruction(object):
                     self.token = TString(priority=-1, callback=None, string=text)
                     self.children = []
                 elif isinstance(tokens[0], TFuncWithParam):
-                    missing_closin_parenthesis = sum([isinstance(t, TParenthesisClose) for t in tokens]) \
-                        - sum([isinstance(t, TParenthesisOpen) for t in tokens]) \
-                        - sum([isinstance(t, TFuncWithParam) for t in tokens])
+                    missing_closing_parenthesis = \
+                        + sum([isinstance(t, TParenthesisOpen) for t in tokens]) \
+                        + sum([isinstance(t, TFuncWithParam) for t in tokens]) \
+                        - sum([isinstance(t, TParenthesisClose) for t in tokens])
 
-                    tokens.extend([TParenthesisClose(priority=0, callback='NULL', string=')')]*missing_closin_parenthesis)
+                    tokens.extend([TParenthesisClose(priority=0, callback='NULL', string=')')]*missing_closing_parenthesis)
 
                     self.token = tokens[0]
                     self.children = [Instruction(sub_tokens) for sub_tokens in split_by_class(tokens[1:-1], TComma)]
@@ -350,6 +352,9 @@ class Instruction(object):
                     Instruction(tokens[:i]),
                     Instruction(tokens[i+1:]),
                 ]
+
+    def __repr__(self):
+        return '<%s "%s">' % (self.__class__.__name__, self.token)
 
     def dump(self, i):
         if i == 0:
@@ -374,20 +379,44 @@ class Parser(object):
                 tmp.append(token)
 
 
+class VM(object):
+    def __init__(self, instructions):
+        self.instructions = instructions
+
+    def run(self):
+        for ins in self.instructions:
+            ins.dump(0)
+            getattr(self, ins.token.callback)(ins)
+
+    def ft_vm_functions_effecr(self, ins):
+        print 'ft_vm_functions_effecr()'
+        print ins
+
+    def ft_vm_functions_input(self, ins):
+        string, var = ins.children
+        print 'ft_vm_functions_input()'
+        print ins
+        print string
+        print var
+
+    def ft_vm_functions_assign(self, ins):
+        val, var = ins.children
+        exit(0)
+
+
 def main():
     if len(sys.argv) != 2:
         print('Usage: %s FILE' % sys.argv[0])
         exit(0)
 
     code = eigthxp_read_code(sys.argv[1])
-    tokens = Tokenizer(code)
-    instructions = Parser(tokens)
+    print '='*30, 'Tokenizer', '='*30
+    tokens = list(Tokenizer(code))
+    print '='*30, 'Parser', '='*30
+    instructions = list(Parser(tokens))
+    print '='*30, 'VM', '='*30
+    VM(instructions).run()
 
-    print '---'
-    for ins in instructions:
-        # print ''.join([t.string for t in tokens])
-        ins.dump(0)
-        print '---'
 
 if __name__ == '__main__':
     main()
