@@ -244,7 +244,6 @@ class Tokenizer(object):
                 yield tokens[(byte, generator.next())]
 
 
-
 def parse_instruction(tokens):
     if len(tokens) == 0:
         raise ValueError('token list to parse is empty')
@@ -360,19 +359,34 @@ class Instruction(object):
             c.dump(i+1)
 
 
+class Parser(object):
+    def __init__(self, tokens):
+        self.tokens = tokens
+
+    def __iter__(self):
+        tmp = []
+        for token in self.tokens:
+            if isinstance(token, TEndOfInstruction):
+                if tmp:
+                    yield Instruction(tmp)
+                    tmp = []
+            else:
+                tmp.append(token)
+
+
 def main():
     if len(sys.argv) != 2:
         print('Usage: %s FILE' % sys.argv[0])
         exit(0)
 
     code = eigthxp_read_code(sys.argv[1])
-
-    token_list = Tokenizer(code)  # actually, ByteReader
+    tokens = Tokenizer(code)
+    instructions = Parser(tokens)
 
     print '---'
-    for tokens in split_by_class(token_list, TEndOfInstruction):  # actually Lexer / Tokenizer
-        print ''.join([t.string for t in tokens])
-        Instruction(tokens).dump(0)
+    for ins in instructions:
+        # print ''.join([t.string for t in tokens])
+        ins.dump(0)
         print '---'
 
 if __name__ == '__main__':
