@@ -35,7 +35,7 @@ def eigthxp_read_code(filename):
         code = f.read()
         code = code[:-1]  # remove null byte
         code, control_sum = code[:-2], struct.unpack('>H', code[-2:])[0]
-        code = [struct.unpack('B', byte)[0] for byte in code]
+        # code = [struct.unpack('B', byte)[0] for byte in code]  # for python 2
 
         print('Calculator   %s' % calculator)
         print('Date         %s' % date)
@@ -53,11 +53,11 @@ def main():
         exit(0)
 
     code = eigthxp_read_code(sys.argv[1])
-    print '='*30, 'Tokenizer', '='*30
+    print('%s%s%s' % ('='*30, 'Tokenizer', '='*30))
     tokens = list(Tokenizer(code))
-    print '='*30, 'Parser', '='*30
+    print('%s%s%s' % ('='*30, 'Parser', '='*30))
     instructions = list(Parser(tokens))
-    print '='*30, 'VM', '='*30
+    print('%s%s%s' % ('='*30, 'VM', '='*30))
     VM(instructions).run()
 
 

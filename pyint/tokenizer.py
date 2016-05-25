@@ -4,8 +4,8 @@
 """
 priorities:
     0 default
-    1 if while (special too)
-    2 != > (special)
+    1 if while ... (special too)
+    2 != > ... (special)
 
     5 ->
     6 functions with param
@@ -125,7 +125,7 @@ tokens = {
     0x58: TVar(priority=0, callback='NULL', string='X'),
     0x59: TVar(priority=0, callback='NULL', string='Y'),
     0x5A: TVar(priority=0, callback='NULL', string='Z'),
-    0x5B: TVar(priority=0, callback='NULL', string='0mega'),
+    0x5B: TVar(priority=0, callback='NULL', string='Omega'),
 
 #0x5D: Token_INCOMPLETE(priority=0, callback='NULL', string='<incomplete>'),
 
@@ -200,7 +200,7 @@ class Tokenizer(object):
     def __iter__(self):
         generator = iter(self.code)
         for byte in generator:
-            try:
-                yield tokens[byte]
-            except KeyError:
-                yield tokens[(byte, generator.next())]
+            # try:
+            yield tokens[byte]
+            # except KeyError:
+            #    yield tokens[(byte, generator.next())]

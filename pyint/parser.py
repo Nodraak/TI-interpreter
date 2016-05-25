@@ -48,8 +48,8 @@ def parse_instruction(tokens):
         raise ValueError('Missing double quotes')
 
     if (in_parenthesis > 0) and (ret_index != -1):
-        print 'Warning: missing closing parenthesis, forgiving:'
-        print '\t', tokens
+        print('Warning: missing closing parenthesis, forgiving:')
+        print('\t%s' % tokens)
         return 0
 
     return ret_index
@@ -109,7 +109,7 @@ class Instruction(object):
                     self.token = tokens[0]
                     self.children = [Instruction(sub_tokens) for sub_tokens in split_by_class(tokens[1:-1], TComma)]
                 else:
-                    print tokens
+                    print(tokens)
                     raise ValueError('parse_instruction returned -1, but I dont how to parse these bytes')
             elif i == 0:
                 self.token = tokens[0]
@@ -128,8 +128,8 @@ class Instruction(object):
 
     def dump(self, i):
         if i == 0:
-            print 'dump:'
-        print '\t'*i + str(self.token)
+            print('dump:')
+        print('%s%s' % ('\t'*i, self.token))
         for c in self.children:
             c.dump(i+1)
 
