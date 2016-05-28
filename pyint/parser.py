@@ -83,21 +83,16 @@ def split_by_class(tokens, delim):
 
 class Instruction(object):
     def __init__(self, tokens):
-        # print 'Instruction():', tokens
-
         if len(tokens) == 1:
-            self.token = tokens[0]
-            self.children = []
+            self.data = tokens[0]
         else:
             i = parse_instruction(tokens)
             if i == -1:
                 if all([isinstance(t, TNumber) for t in tokens]):
-                    self.token = TNumber(priority=-1, callback=None, string=parse_int(tokens))
-                    self.children = []
+                    self.data = TNumber(priority=-1, callback=None, string=parse_int(tokens))
                 elif isinstance(tokens[0], TDoubleQuotes) and isinstance(tokens[-1], TDoubleQuotes):
                     text = ''.join([t.string for t in tokens[1:-1]])
-                    self.token = TString(priority=-1, callback=None, string=text)
-                    self.children = []
+                    self.data = TString(priority=-1, callback=None, string=text)
                 elif isinstance(tokens[0], TFuncWithParam):
                     missing_closing_parenthesis = \
                         + sum([isinstance(t, TParenthesisOpen) for t in tokens]) \
@@ -106,31 +101,36 @@ class Instruction(object):
 
                     tokens.extend([TParenthesisClose(priority=0, callback='NULL', string=')')]*missing_closing_parenthesis)
 
-                    self.token = tokens[0]
-                    self.children = [Instruction(sub_tokens) for sub_tokens in split_by_class(tokens[1:-1], TComma)]
+                    self.data = tokens[0]
+                    self.data.add_children(
+                        [Instruction(sub_tokens) for sub_tokens in split_by_class(tokens[1:-1], TComma)]
+                    )
                 else:
                     print(tokens)
                     raise ValueError('parse_instruction returned -1, but I dont how to parse these bytes')
             elif i == 0:
-                self.token = tokens[0]
-                self.children = [
+                self.data = tokens[0]
+                self.data.add_children([
                     Instruction(tokens[1:]),
-                ]
+                ])
             else:
-                self.token = tokens[i]
-                self.children = [
+                self.data = tokens[i]
+                self.data.add_children([
                     Instruction(tokens[:i]),
                     Instruction(tokens[i+1:]),
-                ]
+                ])
+
+    def as_token(self):
+        return self.data
 
     def __repr__(self):
-        return '<%s "%s">' % (self.__class__.__name__, self.token)
+        return '<%s "%s">' % (self.__class__.__name__, self.as_token())
 
     def dump(self, i):
         if i == 0:
             print('dump:')
-        print('%s%s' % ('\t'*i, self.token))
-        for c in self.children:
+        print('%s%s' % ('\t'*i, self.as_token()))
+        for c in self.as_token().children:
             c.dump(i+1)
 
 

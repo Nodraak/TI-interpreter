@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import copy
+
+
 """
 priorities:
     0 default
@@ -13,7 +16,6 @@ priorities:
     10 + -
     20 * /
     30 ^ !
-
 """
 
 
@@ -22,6 +24,13 @@ class Token(object):
         self.priority = priority
         self.callback = callback
         self.string = string
+        self.children = []
+
+    def clone(self):
+        return copy.deepcopy(self)  # todo: is deepcopy needed ? would copy be enough ?
+
+    def add_children(self, iterator):
+        self.children.extend(iterator)
 
     def __repr__(self):
         return '<%s "%s">' % (self.__class__.__name__, self.string)
@@ -201,6 +210,6 @@ class Tokenizer(object):
         generator = iter(self.code)
         for byte in generator:
             # try:
-            yield tokens[byte]
+            yield tokens[byte].clone()
             # except KeyError:
             #    yield tokens[(byte, generator.next())]

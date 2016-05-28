@@ -13,21 +13,21 @@ class Interpreter(object):
     def run(self, instructions):
         for ins in instructions:
             ins.dump(0)
-            getattr(self, ins.token.callback)(ins)
+            token = ins.as_token()
+            getattr(self, token.callback)(token.children)
             print(self.data)
             print('')
 
-    def ft_vm_functions_effecr(self, ins):
+    def ft_vm_functions_effecr(self, args):
         # todo
         print('ft_vm_functions_effecr()')
 
-    def ft_vm_functions_input(self, ins):
-        string, var = ins.children
-        val = input(string.token.string)
-        self.data[var.token.string] = float(val)
+    def ft_vm_functions_input(self, args):
+        string, var = args
+        val = input(string.as_token().string)
+        self.data[var.as_token().string] = float(val)
 
-    def ft_vm_functions_assign(self, ins):
-        val, var = ins.children
-        self.data[var.token.string] = val.token.string
-
+    def ft_vm_functions_assign(self, args):
+        val, var = args
+        self.data[var.as_token().string] = val.as_token().string
 
