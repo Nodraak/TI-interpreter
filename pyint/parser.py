@@ -139,12 +139,15 @@ class Parser(object):
         self.tokens = tokens
 
     def __iter__(self):
+        instructions = []
         tmp = []
         for token in self.tokens:
             if isinstance(token, TEndOfInstruction):
                 if tmp:
-                    yield Instruction(tmp)
+                    instructions.append(Instruction(tmp))
                     tmp = []
             else:
                 tmp.append(token)
 
+        for i in instructions:
+            yield i

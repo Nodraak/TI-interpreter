@@ -4,15 +4,14 @@
 import string
 
 
-class VM(object):
-    def __init__(self, instructions):
-        self.instructions = instructions
+class Interpreter(object):
+    def __init__(self):
         self.data = {}
         self.data.update({c: 0 for c in string.ascii_uppercase})
         self.data.update({'Omega': 0})
 
-    def run(self):
-        for ins in self.instructions:
+    def run(self, instructions):
+        for ins in instructions:
             ins.dump(0)
             getattr(self, ins.token.callback)(ins)
             print(self.data)
@@ -24,7 +23,7 @@ class VM(object):
 
     def ft_vm_functions_input(self, ins):
         string, var = ins.children
-        val = input(string)
+        val = input(string.token.string)
         self.data[var.token.string] = float(val)
 
     def ft_vm_functions_assign(self, ins):

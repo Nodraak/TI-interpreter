@@ -6,7 +6,7 @@ import sys
 
 from tokenizer import Tokenizer
 from parser import Parser
-from interpreter import VM
+from interpreter import Interpreter
 
 
 def eigthxp_read_code(filename):
@@ -58,7 +58,7 @@ def main():
     print('%s%s%s' % ('='*30, 'Parser', '='*30))
     instructions = list(Parser(tokens))
     print('%s%s%s' % ('='*30, 'VM', '='*30))
-    VM(instructions).run()
+    Interpreter().run(instructions)
 
 
 if __name__ == '__main__':
