@@ -11,6 +11,12 @@ from tokenizer import (
     TParenthesisClose,
     TParenthesisOpen,
     TString,
+    TIf,
+    TThen,
+    TElse,
+    TEnd,
+    TWhile,
+    TFor,
 )
 
 
@@ -127,11 +133,49 @@ class Instruction(object):
         return '<%s "%s">' % (self.__class__.__name__, self.as_token())
 
     def dump(self, i):
+        t = self.as_token()
+
         if i == 0:
             print('dump:')
-        print('%s%s' % ('\t'*i, self.as_token()))
-        for c in self.as_token().children:
-            c.dump(i+1)
+
+        print('%s%s' % ('\t'*i, t))
+
+        if t.children:
+            print('%schildren:' % ('\t'*i))
+            for c in t.children:
+                c.dump(i+1)
+
+        if hasattr(t, 'if_true:'):
+            print('%sif_true' % ('\t'*i))
+            for c in t.if_true:
+                c.dump(i+1)
+
+
+def parse_logic(instruction_generator):
+    ret = []
+
+    for cur_ins in instruction_generator:
+        cur_token = cur_ins.as_token()
+
+        if isinstance(cur_token, TFor) or isinstance(cur_token, TWhile):
+            cur_token.add_if_true(parse_logic(instruction_generator))
+            ret.append(cur_ins)
+        elif isinstance(cur_token, TIf):
+            next_ins = next(instruction_generator)
+            next_token = next_ins.as_token()
+            if isinstance(next_token, TThen):
+                cur_token.add_if_true(parse_logic(instruction_generator))
+            else:
+                cur_token.add_if_true([next_token])
+            ret.append(cur_ins)
+        elif isinstance(cur_token, TEnd):
+            return ret
+        elif isinstance(cur_token, TElse):
+            raise ValueError('ParserError: Unhandled instructions Else.')
+        else:
+            ret.append(cur_ins)
+
+    return ret
 
 
 class Parser(object):
@@ -139,6 +183,9 @@ class Parser(object):
         self.tokens = tokens
 
     def __iter__(self):
+
+        # parse instructions
+
         instructions = []
         tmp = []
         for token in self.tokens:
@@ -148,6 +195,14 @@ class Parser(object):
                     tmp = []
             else:
                 tmp.append(token)
+        if tmp:
+            tmp.append(token)
+
+        # parse logic (if, while, ...)
+
+        instructions = parse_logic(iter(instructions))
+
+        # return
 
         for i in instructions:
             yield i

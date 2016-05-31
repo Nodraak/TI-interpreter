@@ -53,11 +53,11 @@ def main():
         exit(0)
 
     code = eigthxp_read_code(sys.argv[1])
-    print('%s%s%s' % ('='*30, 'Tokenizer', '='*30))
+    print('%s %s %s' % ('='*30, 'Tokenizer', '='*30))
     tokens = list(Tokenizer(code))
-    print('%s%s%s' % ('='*30, 'Parser', '='*30))
+    print('%s %s %s' % ('='*30, 'Parser', '='*30))
     instructions = list(Parser(tokens))
-    print('%s%s%s' % ('='*30, 'VM', '='*30))
+    print('%s %s %s' % ('='*30, 'VM', '='*30))
     Interpreter().run(instructions)
 
 

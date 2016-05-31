@@ -29,8 +29,8 @@ class Token(object):
     def clone(self):
         return copy.deepcopy(self)  # todo: is deepcopy needed ? would copy be enough ?
 
-    def add_children(self, iterator):
-        self.children.extend(iterator)
+    def add_children(self, iterable):
+        self.children.extend(iterable)
 
     def __repr__(self):
         return '<%s "%s">' % (self.__class__.__name__, self.string)
@@ -60,7 +60,34 @@ class TEndOfInstruction(Token):
 class TFuncWithParam(Token):
     pass
 
-class TTest(Token):
+class TCond(Token):
+    def __init__(self, *args, **kwargs):
+        super(TCond, self).__init__(*args, **kwargs)
+        self.if_true = []
+        self.if_false = []
+
+    def add_if_true(self, iterable):
+        self.if_true.extend(iterable)
+
+    def add_if_false(self, iterable):
+        self.if_false.extend(iterable)
+
+class TIf(TCond):
+    pass
+
+class TWhile(TCond):
+    pass
+
+class TFor(TCond):
+    pass
+
+class TThen(Token):
+    pass
+
+class TElse(Token):
+    pass
+
+class TEnd(Token):
     pass
 
 class TDoubleQuotes(Token):
@@ -168,14 +195,14 @@ tokens = {
 #0xBB: Token_INCOMPLETE(priority=0, callback='NULL', string='<incomplete>'),
     0xBC: TFuncWithParam(priority=6, callback='ft_vm_function_sqrt', string='sqrt('),
 
-    0xCE: TTest(priority=1, callback='ft_vm_functions_if', string='If'),
-    0xCF: TTest(priority=1, callback='NULL', string='Then'),
+    0xCE: TIf(priority=1, callback='ft_vm_functions_if', string='If'),
+    0xCF: TThen(priority=1, callback='NULL', string='Then'),
 
-    0xD0: TTest(priority=1, callback='NULL', string='Else'),
-    0xD1: TTest(priority=1, callback='ft_vm_functions_while', string='While'),
+    0xD0: TElse(priority=1, callback='NULL', string='Else'),
+    0xD1: TWhile(priority=1, callback='ft_vm_functions_while', string='While'),
 
-    0xD3: TTest(priority=1, callback='ft_vm_functions_for', string='For('),
-    0xD4: TTest(priority=1, callback='NULL', string='End'),
+    0xD3: TFor(priority=1, callback='ft_vm_functions_for', string='For('),
+    0xD4: TEnd(priority=1, callback='NULL', string='End'),
 
     0xD6: TOther(priority=0, callback='NULL', string='Lbl'),
     0xD7: TOther(priority=0, callback='NULL', string='Goto'),
