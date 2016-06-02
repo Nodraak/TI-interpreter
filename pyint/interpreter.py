@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import string
+from string import ascii_uppercase
 
 from tokenizer import (
     TFuncWithParam,
@@ -14,7 +14,7 @@ from tokenizer import (
 class Interpreter(object):
     def __init__(self):
         self.data = {}
-        self.data.update({c: 0 for c in string.ascii_uppercase})
+        self.data.update({c: 0 for c in ascii_uppercase})
         self.data.update({'Omega': 0})
         self.data.update({'ret': 0})
 
@@ -35,10 +35,11 @@ class Interpreter(object):
             return token.payload
         elif isinstance(token, TVar):
             return self.data[token.string]
-        # elif isinstance(token, TFuncWithParam):
-            # self.run(token.args)
-            # return self.data['ret']
-            # pass  # todo fix this
+        elif isinstance(token, TString):
+            return token.string
+        elif isinstance(token, TFuncWithParam):
+            self.run(token.children)
+            return self.data['ret']
 
         print('')
         print('get_arg_value', token)

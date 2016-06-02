@@ -196,7 +196,7 @@ class Parser(object):
             else:
                 tmp.append(token)
         if tmp:
-            tmp.append(token)
+            instructions.append(Instruction(tmp))
 
         # parse logic (if, while, ...)
 
