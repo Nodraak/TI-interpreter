@@ -95,7 +95,8 @@ class Instruction(object):
             i = parse_instruction(tokens)
             if i == -1:
                 if all([isinstance(t, TNumber) for t in tokens]):
-                    self.data = TNumber(priority=-1, string=parse_int(tokens))
+                    val = parse_int(tokens)
+                    self.data = TNumber(priority=-1, string=str(val), payload=val)
                 elif isinstance(tokens[0], TDoubleQuotes) and isinstance(tokens[-1], TDoubleQuotes):
                     text = ''.join([t.string for t in tokens[1:-1]])
                     self.data = TString(priority=-1, string=text)

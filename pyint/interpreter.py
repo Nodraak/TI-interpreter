@@ -4,6 +4,8 @@
 from string import ascii_uppercase
 
 from tokenizer import (
+    TCond,
+    TFunc,
     TFuncWithParam,
     TNumber,
     TString,
@@ -22,13 +24,15 @@ class Interpreter(object):
         for ins in instructions:
             token = ins.as_token()
 
-            callback = getattr(self, token.payload, None)
-            if callback:
+
+            if isinstance(token, TNumber) or isinstance(token, TVar):
+                self.data['ret'] = self.get_arg_value(token)
+            elif isinstance(token, TFunc) or isinstance(token, TFuncWithParam) or isinstance(token, TCond):
+                callback = getattr(self, token.payload)
                 callback(token)
             else:
-                raise ValueError('InterpreterError: function not implemented.')
+                raise ValueError('InterpreterError: unknown token "%s".' % token.payload)
 
-            print('')
 
     def get_arg_value(self, token):
         if isinstance(token, TNumber):
@@ -51,12 +55,15 @@ class Interpreter(object):
         print('ft_vm_functions_effecr()')
 
     def ft_vm_functions_input(self, token):
-        print('input', token.children)
-        string, var = token.children
-        val = input(string.as_token().string)
-        self.data[var.as_token().string] = float(val)
+        arg1, arg2 = token.children
+        prompt = arg1.as_token().string
+        key = arg2.as_token().string
+        val = input(prompt)
+        self.data[key] = float(val)
 
     def ft_vm_functions_assign(self, token):
-        val, var = token.children
-        self.data[var.as_token().string] = val.as_token().payload
+        arg1, arg2 = token.children
+        var = arg2.as_token().string
+        val = self.get_arg_value(arg1.as_token())
+        self.data[var] = val
 

@@ -182,7 +182,7 @@ tokens = {
 
     0x6F: TOp(priority=2, string='!=', payload='ft_vm_functions_not_equal'),
     0x70: TOp(priority=10, string='+', payload='ft_vm_functions_add'),
-    0x71: TOp(priority=10, string='-', payload='ft_vm_functions_add'),
+    0x71: TOp(priority=10, string='-', payload='ft_vm_functions_sub'),
 
     0x82: TOp(priority=20, string='*', payload='ft_vm_functions_mul'),
     0x83: TOp(priority=20, string='/', payload='ft_vm_functions_div'),
