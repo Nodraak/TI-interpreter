@@ -17,15 +17,12 @@ from tokenizer import (
     TEnd,
     TWhile,
     TFor,
+    TOp,
 )
 
 
 def parse_instruction(tokens):
-    if len(tokens) == 0:
-        raise ValueError('token list to parse is empty')
-
-    if len(tokens) == 1:
-        return -1
+    assert len(tokens) not in (0, 1)
 
     ret_index = -1
     ret_priority = 100
@@ -33,7 +30,8 @@ def parse_instruction(tokens):
     in_text = False
     for i, t in enumerate(tokens):
         if not isinstance(t, TAssign):
-            if isinstance(t, TParenthesisOpen) or isinstance(t, TFuncWithParam):
+            # explicit parenthesis open or implicit with TFuncWithParam (but not with conditionnal statement TOp)
+            if isinstance(t, TParenthesisOpen) or (isinstance(t, TFuncWithParam) and not isinstance(t, TOp)):
                 in_parenthesis += 1
                 continue
             if isinstance(t, TDoubleQuotes):
@@ -51,23 +49,23 @@ def parse_instruction(tokens):
             ret_index = i
 
     if in_text:
-        raise ValueError('Missing double quotes')
+        raise ValueError('SyntaxError: missing double quotes.')
 
     if (in_parenthesis > 0) and (ret_index != -1):
         print('Warning: missing closing parenthesis, forgiving:')
         print('\t%s' % tokens)
-        return 0
+        return ret_index
 
     return ret_index
 
 
 def parse_int(tokens):
-    ret = 0
+    ret = 0.0
     for t in tokens:
         if not isinstance(t, TNumber):
-            raise ValueError('Unexpected non TNumber token')
+            raise ValueError('SyntaxError: unexpected non TNumber token.')
 
-        ret = ret*10 + int(t.string)
+        ret = ret*10 + t.payload
 
     return ret
 
@@ -89,23 +87,25 @@ def split_by_class(tokens, delim):
 
 class Instruction(object):
     def __init__(self, tokens):
+        assert len(tokens) != 0
+
         if len(tokens) == 1:
             self.data = tokens[0]
         else:
             i = parse_instruction(tokens)
             if i == -1:
                 if all([isinstance(t, TNumber) for t in tokens]):
-                    self.data = TNumber(priority=-1, callback=None, string=parse_int(tokens))
+                    self.data = TNumber(priority=-1, string=parse_int(tokens))
                 elif isinstance(tokens[0], TDoubleQuotes) and isinstance(tokens[-1], TDoubleQuotes):
                     text = ''.join([t.string for t in tokens[1:-1]])
-                    self.data = TString(priority=-1, callback=None, string=text)
+                    self.data = TString(priority=-1, string=text)
                 elif isinstance(tokens[0], TFuncWithParam):
                     missing_closing_parenthesis = \
                         + sum([isinstance(t, TParenthesisOpen) for t in tokens]) \
-                        + sum([isinstance(t, TFuncWithParam) for t in tokens]) \
+                        + sum([isinstance(t, TFuncWithParam) and not isinstance(t, TOp) for t in tokens]) \
                         - sum([isinstance(t, TParenthesisClose) for t in tokens])
 
-                    tokens.extend([TParenthesisClose(priority=0, callback='NULL', string=')')]*missing_closing_parenthesis)
+                    tokens.extend([TParenthesisClose(priority=0, string=')')]*missing_closing_parenthesis)
 
                     self.data = tokens[0]
                     self.data.add_children(
@@ -132,23 +132,23 @@ class Instruction(object):
     def __repr__(self):
         return '<%s "%s">' % (self.__class__.__name__, self.as_token())
 
-    def dump(self, i):
+    def dump(self, depth=0):
         t = self.as_token()
 
-        if i == 0:
+        if depth == 0:
             print('dump:')
 
-        print('%s%s' % ('\t'*i, t))
+        print('%s%s' % ('\t'*depth, t))
 
         if t.children:
-            print('%schildren:' % ('\t'*i))
+            print('%schildren:' % ('\t'*depth))
             for c in t.children:
-                c.dump(i+1)
+                c.dump(depth+1)
 
-        if hasattr(t, 'if_true:'):
-            print('%sif_true' % ('\t'*i))
+        if hasattr(t, 'if_true'):
+            print('%sif_true:' % ('\t'*depth))
             for c in t.if_true:
-                c.dump(i+1)
+                c.dump(depth+1)
 
 
 def parse_logic(instruction_generator):
@@ -171,7 +171,7 @@ def parse_logic(instruction_generator):
         elif isinstance(cur_token, TEnd):
             return ret
         elif isinstance(cur_token, TElse):
-            raise ValueError('ParserError: Unhandled instructions Else.')
+            raise ValueError('ParserError: unhandled instructions Else.')
         else:
             ret.append(cur_ins)
 
