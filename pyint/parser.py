@@ -70,7 +70,7 @@ def parse_int(tokens):
         if not isinstance(t, TNumber):
             raise ValueError('SyntaxError: unexpected non TNumber token.')
 
-        if t.payload == None:  # got a point, ie the number is a float
+        if t.payload is None:  # got a point, ie the number is a float
             ret *= 10 ** -exponent
         else:
             ret += t.payload * 10**exponent
@@ -129,6 +129,12 @@ class Instruction(object):
                     self.data.add_children(
                         [Instruction(sub_tokens) for sub_tokens in split_by_class(tokens[1:-1], TComma)]
                     )
+
+                    if isinstance(tokens[0], TFor):
+                        if len(self.data.children) == 3:
+                            self.data.add_children([
+                                Instruction([TNumber(priority=0, string='1', payload=1)]),
+                            ])  # fixme: this is fragile
                 else:
                     print(tokens)
                     raise ValueError('parse_instruction returned -1, but I dont how to parse these bytes')
