@@ -136,3 +136,16 @@ class Interpreter(object):
         (arg1, ) = token.children
         val1 = self.get_arg_value(arg1.as_token())
         self.data['ret'] = val1-int(val1)
+
+    def ft_vm_functions_pow(self, token):
+        arg1, arg2 = token.children
+        val1 = self.get_arg_value(arg1.as_token())
+        val2 = self.get_arg_value(arg2.as_token())
+        self.data['ret'] = val1 ** val2
+
+    def ft_vm_functions_disp(self, token):
+        if len(token.children) == 0:
+            print('')
+        else:
+            raise ValueError('InterpreterError: not implemented')
+

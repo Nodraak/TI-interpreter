@@ -54,6 +54,9 @@ class TString(Token):
 class TFunc(Token):
     pass
 
+class TFact(TFunc):
+    pass
+
 # functions with param
 
 class TFuncWithParam(Token):
@@ -117,7 +120,7 @@ class TOther(Token):
 
 tokens = {
     0x04: TAssign(priority=5, string='->', payload='ft_vm_functions_assign'),
-    0x0D: TFunc(priority=30, string='^2', payload='ft_vm_function_square'),
+    0x0D: TFunc(priority=30, string='^2', payload='ft_vm_functions_square'),
 
     0x10: TParenthesisOpen(priority=0, string='('),
     0x11: TParenthesisClose(priority=0, string=')'),
@@ -125,7 +128,7 @@ tokens = {
     0x2A: TDoubleQuotes(priority=0, string='"'),
     0x2B: TComma(priority=7, string=','),
 
-    0x2D: TFunc(priority=30, string='!', payload='ft_vm_functions_fact'),
+    0x2D: TFact(priority=30, string='!', payload='ft_vm_functions_fact'),
 
     0x29: TOther(priority=0, string=' '),
     0x30: TNumber(priority=0, string='0', payload=0),
@@ -202,7 +205,7 @@ tokens = {
 
     0xBA: TFuncWithParam(priority=6, string='partDec(', payload='ft_vm_functions_partdec'),
 #0xBB: Token_INCOMPLETE(priority=0, callback='NULL', string='<incomplete>'),
-    0xBC: TFuncWithParam(priority=6, string='sqrt(', payload='ft_vm_function_sqrt'),
+    0xBC: TFuncWithParam(priority=6, string='sqrt(', payload='ft_vm_functions_sqrt'),
 
     0xCE: TIf(priority=1, string='If', payload='ft_vm_functions_if'),
     0xCF: TThen(priority=1, string='Then'),
@@ -222,7 +225,7 @@ tokens = {
 
     0xE1: TFunc(priority=0, string='EffEcr', payload='ft_vm_functions_effecr'),
 
-    0xF0: TOp(priority=30, string='^', payload='ft_vm_function_pow'),
+    0xF0: TOp(priority=30, string='^', payload='ft_vm_functions_pow'),
 
     (0x5d, 0x00): TVar(priority=0, string='L1'),
     (0x5d, 0x01): TVar(priority=0, string='L2'),
@@ -245,7 +248,7 @@ class Tokenizer(object):
     def __iter__(self):
         generator = iter(self.code)
         for byte in generator:
-            # try:
-            yield tokens[byte].clone()
-            # except KeyError:
-            #    yield tokens[(byte, next(generator))]
+            try:
+                yield tokens[byte].clone()
+            except KeyError:
+                yield tokens[(byte, next(generator))]

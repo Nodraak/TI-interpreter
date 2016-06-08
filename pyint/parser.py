@@ -6,8 +6,10 @@ from tokenizer import (
     TComma,
     TDoubleQuotes,
     TEndOfInstruction,
+    TFact,
     TFuncWithParam,
     TNumber,
+    TVar,
     TParenthesisClose,
     TParenthesisOpen,
     TString,
@@ -30,8 +32,10 @@ def parse_instruction(tokens):
     in_text = False
     for i, t in enumerate(tokens):
         if not isinstance(t, TAssign):
-            # explicit parenthesis open or implicit with TFuncWithParam (but not with conditionnal statement TOp)
-            if isinstance(t, TParenthesisOpen) or (isinstance(t, TFuncWithParam) and not isinstance(t, TOp)):
+            # explicit parenthesis open or implicit with TFuncWithParam (but not with conditionnal statement TOp) or For
+            if isinstance(t, TParenthesisOpen) \
+                or (isinstance(t, TFuncWithParam) and not isinstance(t, TOp)) \
+                or isinstance(t, TFor):
                 in_parenthesis += 1
                 continue
             if isinstance(t, TDoubleQuotes):
@@ -54,18 +58,24 @@ def parse_instruction(tokens):
     if (in_parenthesis > 0) and (ret_index != -1):
         print('Warning: missing closing parenthesis, forgiving:')
         print('\t%s' % tokens)
-        return ret_index
 
     return ret_index
 
 
 def parse_int(tokens):
-    ret = 0.0
-    for t in tokens:
+    exponent = 0
+    ret = 0
+
+    for t in tokens[::-1]:
         if not isinstance(t, TNumber):
             raise ValueError('SyntaxError: unexpected non TNumber token.')
 
-        ret = ret*10 + t.payload
+        if t.payload == None:  # got a point, ie the number is a float
+            ret *= 10 ** -exponent
+        else:
+            ret += t.payload * 10**exponent
+
+        exponent += 1
 
     return ret
 
@@ -97,10 +107,17 @@ class Instruction(object):
                 if all([isinstance(t, TNumber) for t in tokens]):
                     val = parse_int(tokens)
                     self.data = TNumber(priority=-1, string=str(val), payload=val)
+                elif all([isinstance(t, TNumber) for t in tokens[:-1]]) and isinstance(tokens[-1], TVar):
+                    before, after = tokens[:-1], [tokens[-1]]
+                    self.data = TOp(priority=20, string='*', payload='ft_vm_functions_mul').clone()  # fixme: this is fragile
+                    self.data.add_children([
+                        Instruction(before),
+                        Instruction(after),
+                    ])
                 elif isinstance(tokens[0], TDoubleQuotes) and isinstance(tokens[-1], TDoubleQuotes):
                     text = ''.join([t.string for t in tokens[1:-1]])
                     self.data = TString(priority=-1, string=text)
-                elif isinstance(tokens[0], TFuncWithParam):
+                elif isinstance(tokens[0], TFuncWithParam) or isinstance(tokens[0], TFor):
                     missing_closing_parenthesis = \
                         + sum([isinstance(t, TParenthesisOpen) for t in tokens]) \
                         + sum([isinstance(t, TFuncWithParam) and not isinstance(t, TOp) for t in tokens]) \
@@ -121,11 +138,17 @@ class Instruction(object):
                     Instruction(tokens[1:]),
                 ])
             else:
-                self.data = tokens[i]
+                before, current, after = tokens[:i], tokens[i], tokens[i+1:]
+
+                self.data = current
                 self.data.add_children([
-                    Instruction(tokens[:i]),
-                    Instruction(tokens[i+1:]),
+                    Instruction(before),
                 ])
+
+                if not (isinstance(current, TFact) and (len(after) == 0)):
+                    self.data.add_children([
+                        Instruction(after),
+                    ])
 
     def as_token(self):
         return self.data

@@ -9,6 +9,10 @@ from parser import Parser
 from interpreter import Interpreter
 
 
+if sys.version_info.major < 3:
+    raise RuntimeError('Python 3 is required')
+
+
 def eigthxp_read_code(filename):
     FILE_TYPE = [
         'Real number',
