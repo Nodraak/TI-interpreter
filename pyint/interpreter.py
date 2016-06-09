@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from itertools import zip_longest
 from math import factorial
 import string
 import time
@@ -21,9 +22,9 @@ class Interpreter(object):
         self.variables.update({c: 0 for c in string.ascii_uppercase})
         self.variables.update({'Omega': 0})
         self.ret = 0
-        self.screen = [[0 for x in range(95)] for y in range(63)]  # todo define
+        self.screan_clear()
 
-    def run(self, instructions):
+    def run(self, instructions, update_screen=True):
         for ins in instructions:
             token = ins.as_token()
 
@@ -35,15 +36,31 @@ class Interpreter(object):
             else:
                 raise ValueError('InterpreterError: unknown token "%s".' % token.payload)
 
-            self.refresh_screen()
-
-            time.sleep(1.0/20)
+            if update_screen:
+                self.refresh_screen()
+                time.sleep(1.0/20)
 
     def refresh_screen(self):
-        print('+%s+' % ('-'*95))
-        for row in self.screen:
-            print('|%s|' % ''.join(['X' if x else ' ' for x in row]))
-        print('+%s+' % ('-'*95))
+        tmp_pxl = []
+        tmp_pxl.append('+%s+' % ('-'*95))
+        for row in self.screen[::-1]:
+            tmp_pxl.append('|%s|' % ''.join(['X' if x else ' ' for x in row]))
+        tmp_pxl.append('+%s+' % ('-'*95))
+
+        tmp_state = []
+        tmp_state.append('')
+        for var, val in sorted(self.variables.items()):
+            tmp_state.append('%s: %s' % (var, val))
+
+        zipped = zip_longest(tmp_pxl, tmp_state, fillvalue='')
+        print('\n'.join([' '.join(tup) for tup in zipped]))
+
+    def screan_clear(self):
+        self.screen = [[0 for x in range(95)] for y in range(63)]  # todo define
+
+    def screen_set_pxl(self, x, y, val=1):
+        if 0 <= x and x < 95 and 0 <= y and y < 63:
+            self.screen[y][x] = val
 
     def get_arg_value(self, ins):
         token = ins.as_token()
@@ -55,17 +72,13 @@ class Interpreter(object):
         elif isinstance(token, TString):
             return token.string
         elif isinstance(token, TFuncWithParam):
-            self.run(token.children)
+            self.run([ins])
             return self.ret
 
-        print('')
-        print('get_arg_value', token)
-
-        raise ValueError('todo / fixme')
+        raise ValueError('InterpreterError: unknown value "%s"' % str(token))
 
     def ft_vm_functions_effecr(self, token):
-        # todo
-        print('ft_vm_functions_effecr()')
+        self.screan_clear()
 
     def ft_vm_functions_input(self, token):
         arg1, arg2 = token.children
@@ -75,8 +88,7 @@ class Interpreter(object):
         self.variables[key] = float(val)
 
     def ft_vm_functions_effdessin(self, token):
-        # todo
-        print('ft_vm_functions_effdessin()')
+        self.screan_clear()
 
     def ft_vm_functions_assign(self, token):
         arg1, arg2 = token.children
@@ -85,27 +97,27 @@ class Interpreter(object):
         self.variables[var] = val
 
     def ft_vm_functions_if(self, token):
-        self.run(token.children)
+        self.run(token.children, False)
         if self.ret:
             self.run(token.if_true)
         # todo else run(if_false)
 
     def ft_vm_functions_while(self, token):
-        self.run(token.children)
+        self.run(token.children, False)
         while self.ret:
             self.run(token.if_true)
-            self.run(token.children)
+            self.run(token.children, False)
 
     def ft_vm_functions_for(self, token):
         var, start, stop, step = token.children
 
-        var = self.get_arg_value(var)
+        var = var.as_token().string
         start = self.get_arg_value(start)
         stop = self.get_arg_value(stop)
         step = self.get_arg_value(step)
 
         self.variables[var] = start
-        while (stop - self.variables[var])*step > 0:
+        while (stop - self.variables[var])*step >= 0:
             self.run(token.if_true)
             self.variables[var] += step
 
@@ -167,6 +179,11 @@ class Interpreter(object):
         val1 = self.get_arg_value(arg1)
         self.ret = val1-int(val1)
 
+    def ft_vm_functions_neg(self, token):
+        (arg, ) = token.children
+        val = self.get_arg_value(arg)
+        self.ret = -val
+
     def ft_vm_functions_pow(self, token):
         arg1, arg2 = token.children
         val1 = self.get_arg_value(arg1)
@@ -196,18 +213,57 @@ class Interpreter(object):
 
         for letter in text:
             if letter == ' ':
-                x += 2
+                x += 1
                 continue
 
             for j in range(5):
                 for i in range(3):
                     pxl = text_get_pixel(letter, j, i)
-                    self.screen[y+j-1][x+i-1] = pxl
+                    self.screen_set_pxl(x+i, 63-1-(y+j), pxl)
+
             x += 4
+
+    def ft_vm_functions_hline(self, token):
+        x1, x2, y = token.children
+
+        x1 = self.get_arg_value(x1)
+        x2 = self.get_arg_value(x2)
+        y = self.get_arg_value(y)
+
+        for i in range(x1, x2+1):
+            self.screen_set_pxl(i, y)
+
+    def ft_vm_functions_vline(self, token):
+        x, y1, y2 = token.children
+
+        x = self.get_arg_value(x)
+        y1 = self.get_arg_value(y1)
+        y2 = self.get_arg_value(y2)
+
+        self._ft_vm_functions_vline(x, y1, y2)
+
+    def _ft_vm_functions_vline(self, x, y1, y2):
+        for j in range(y1, y2+1):
+            self.screen_set_pxl(x, j)
 
     def ft_vm_functions_line(self, token):
         x1, y1, x2, y2 = token.children
-        # todo
+
+        x1 = self.get_arg_value(x1)
+        y1 = self.get_arg_value(y1)
+        x2 = self.get_arg_value(x2)
+        y2 = self.get_arg_value(y2)
+
+        if x1 == x2:
+            self._ft_vm_functions_vline(x1, y1, y2)
+        else:
+            if (x1 > x2):
+                x1, x2 = x2, x1
+
+            coeff = (y2-y1) / (x2-x1)
+            for i in range(x1, x2+1):
+                j = y1 + (i-x1)*coeff
+                self.screen_set_pxl(i, int(j))
 
 
 def text_get_pixel(letter, j, i):

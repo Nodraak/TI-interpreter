@@ -235,4 +235,5 @@ class Parser(object):
         # return
 
         for i in instructions:
+            i.dump()
             yield i
