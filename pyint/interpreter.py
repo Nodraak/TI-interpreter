@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from string import ascii_uppercase
+import time
 
 from tokenizer import (
     TCond,
@@ -15,18 +16,17 @@ from tokenizer import (
 
 class Interpreter(object):
     def __init__(self):
-        self.data = {}
-        self.data.update({c: 0 for c in ascii_uppercase})
-        self.data.update({'Omega': 0})
-        self.data.update({'ret': 0})
+        self.variables = {}
+        self.variables.update({c: 0 for c in ascii_uppercase})
+        self.variables.update({'Omega': 0})
+        self.ret = 0
 
     def run(self, instructions):
         for ins in instructions:
             token = ins.as_token()
 
-
             if isinstance(token, TNumber) or isinstance(token, TVar):
-                self.data['ret'] = self.get_arg_value(token)
+                self.ret = self.get_arg_value(ins)
             elif isinstance(token, TFunc) or isinstance(token, TFuncWithParam) or isinstance(token, TCond):
                 callback = getattr(self, token.payload)
                 callback(token)
@@ -34,16 +34,18 @@ class Interpreter(object):
                 raise ValueError('InterpreterError: unknown token "%s".' % token.payload)
 
 
-    def get_arg_value(self, token):
+    def get_arg_value(self, ins):
+        token = ins.as_token()
+
         if isinstance(token, TNumber):
             return token.payload
         elif isinstance(token, TVar):
-            return self.data[token.string]
+            return self.variables[token.string]
         elif isinstance(token, TString):
             return token.string
         elif isinstance(token, TFuncWithParam):
             self.run(token.children)
-            return self.data['ret']
+            return self.ret
 
         print('')
         print('get_arg_value', token)
@@ -59,93 +61,92 @@ class Interpreter(object):
         prompt = arg1.as_token().string
         key = arg2.as_token().string
         val = input(prompt)
-        self.data[key] = float(val)
+        self.variables[key] = float(val)
 
     def ft_vm_functions_assign(self, token):
         arg1, arg2 = token.children
         var = arg2.as_token().string
-        val = self.get_arg_value(arg1.as_token())
-        self.data[var] = val
+        val = self.get_arg_value(arg1)
+        self.variables[var] = val
 
     def ft_vm_functions_if(self, token):
         self.run(token.children)
-        if self.data['ret']:
+        if self.ret:
             self.run(token.if_true)
         # todo else run(if_false)
 
     def ft_vm_functions_while(self, token):
         self.run(token.children)
-        while self.data['ret']:
+        while self.ret:
             self.run(token.if_true)
             self.run(token.children)
 
     def ft_vm_functions_equal(self, token):
         arg1, arg2 = token.children
-        val1 = self.get_arg_value(arg1.as_token())
-        val2 = self.get_arg_value(arg2.as_token())
-        self.data['ret'] = val1 == val2
+        val1 = self.get_arg_value(arg1)
+        val2 = self.get_arg_value(arg2)
+        self.ret = val1 == val2
 
     def ft_vm_functions_not_equal(self, token):
         arg1, arg2 = token.children
-        val1 = self.get_arg_value(arg1.as_token())
-        val2 = self.get_arg_value(arg2.as_token())
-        self.data['ret'] = val1 != val2
+        val1 = self.get_arg_value(arg1)
+        val2 = self.get_arg_value(arg2)
+        self.ret = val1 != val2
 
     def ft_vm_functions_greater(self, token):
         arg1, arg2 = token.children
-        val1 = self.get_arg_value(arg1.as_token())
-        val2 = self.get_arg_value(arg2.as_token())
-        self.data['ret'] = val1 > val2
+        val1 = self.get_arg_value(arg1)
+        val2 = self.get_arg_value(arg2)
+        self.ret = val1 > val2
 
     def ft_vm_functions_lower(self, token):
         arg1, arg2 = token.children
-        val1 = self.get_arg_value(arg1.as_token())
-        val2 = self.get_arg_value(arg2.as_token())
-        self.data['ret'] = val1 < val2
+        val1 = self.get_arg_value(arg1)
+        val2 = self.get_arg_value(arg2)
+        self.ret = val1 < val2
 
     def ft_vm_functions_add(self, token):
         arg1, arg2 = token.children
-        val1 = self.get_arg_value(arg1.as_token())
-        val2 = self.get_arg_value(arg2.as_token())
-        self.data['ret'] = val1 + val2
+        val1 = self.get_arg_value(arg1)
+        val2 = self.get_arg_value(arg2)
+        self.ret = val1 + val2
 
     def ft_vm_functions_sub(self, token):
         arg1, arg2 = token.children
-        val1 = self.get_arg_value(arg1.as_token())
-        val2 = self.get_arg_value(arg2.as_token())
-        self.data['ret'] = val1 + val2
+        val1 = self.get_arg_value(arg1)
+        val2 = self.get_arg_value(arg2)
+        self.ret = val1 + val2
 
     def ft_vm_functions_mul(self, token):
         arg1, arg2 = token.children
-        val1 = self.get_arg_value(arg1.as_token())
-        val2 = self.get_arg_value(arg2.as_token())
-        self.data['ret'] = val1 * val2
+        val1 = self.get_arg_value(arg1)
+        val2 = self.get_arg_value(arg2)
+        self.ret = val1 * val2
 
     def ft_vm_functions_div(self, token):
         arg1, arg2 = token.children
-        val1 = self.get_arg_value(arg1.as_token())
-        val2 = self.get_arg_value(arg2.as_token())
-        self.data['ret'] = val1 / val2
+        val1 = self.get_arg_value(arg1)
+        val2 = self.get_arg_value(arg2)
+        self.ret = val1 / val2
 
     def ft_vm_functions_partent(self, token):
         (arg1, ) = token.children
-        val1 = self.get_arg_value(arg1.as_token())
-        self.data['ret'] = int(val1)
+        val1 = self.get_arg_value(arg1)
+        self.ret = int(val1)
 
     def ft_vm_functions_partdec(self, token):
         (arg1, ) = token.children
-        val1 = self.get_arg_value(arg1.as_token())
-        self.data['ret'] = val1-int(val1)
+        val1 = self.get_arg_value(arg1)
+        self.ret = val1-int(val1)
 
     def ft_vm_functions_pow(self, token):
         arg1, arg2 = token.children
-        val1 = self.get_arg_value(arg1.as_token())
-        val2 = self.get_arg_value(arg2.as_token())
-        self.data['ret'] = val1 ** val2
+        val1 = self.get_arg_value(arg1)
+        val2 = self.get_arg_value(arg2)
+        self.ret = val1 ** val2
 
     def ft_vm_functions_disp(self, token):
         if len(token.children) == 0:
             print('')
         else:
             raise ValueError('InterpreterError: not implemented')
-
