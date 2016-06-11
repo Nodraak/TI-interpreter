@@ -5,21 +5,22 @@ from tokenizer import (
     TAssign,
     TComma,
     TDoubleQuotes,
+    TElse,
+    TEnd,
     TEndOfInstruction,
     TFact,
+    TFor,
     TFuncWithParam,
+    TIf,
+    TLine,
     TNumber,
-    TVar,
+    TOp,
     TParenthesisClose,
     TParenthesisOpen,
     TString,
-    TIf,
     TThen,
-    TElse,
-    TEnd,
+    TVar,
     TWhile,
-    TFor,
-    TOp,
 )
 
 
@@ -109,7 +110,7 @@ class Instruction(object):
                     self.data = TNumber(priority=-1, string=str(val), payload=val)
                 elif all([isinstance(t, TNumber) for t in tokens[:-1]]) and isinstance(tokens[-1], TVar):
                     before, after = tokens[:-1], [tokens[-1]]
-                    self.data = TOp(priority=20, string='*', payload='ft_vm_functions_mul').clone()  # fixme: this is fragile
+                    self.data = TOp(priority=20, string='*', payload='ft_vm_functions_mul', param_count=2).clone()  # fixme: this is fragile
                     self.data.add_children([
                         Instruction(before),
                         Instruction(after),
@@ -118,23 +119,36 @@ class Instruction(object):
                     text = ''.join([t.string for t in tokens[1:-1]])
                     self.data = TString(priority=-1, string=text)
                 elif isinstance(tokens[0], TFuncWithParam) or isinstance(tokens[0], TFor):
+                    # fix missing parenthesis
                     missing_closing_parenthesis = \
                         + sum([isinstance(t, TParenthesisOpen) for t in tokens]) \
                         + sum([isinstance(t, TFuncWithParam) and not isinstance(t, TOp) for t in tokens]) \
                         - sum([isinstance(t, TParenthesisClose) for t in tokens])
-
                     tokens.extend([TParenthesisClose(priority=0, string=')')]*missing_closing_parenthesis)
 
+                    # parse
                     self.data = tokens[0]
                     self.data.add_children(
                         [Instruction(sub_tokens) for sub_tokens in split_by_class(tokens[1:-1], TComma)]
                     )
 
-                    if isinstance(tokens[0], TFor):
-                        if len(self.data.children) == 3:
-                            self.data.add_children([
-                                Instruction([TNumber(priority=0, string='1', payload=1)]),
-                            ])  # fixme: this is fragile
+                    # add default values for optionnal parameters
+                    if isinstance(tokens[0], TFor) and (len(self.data.children) == 3):
+                        self.data.add_children([
+                            Instruction([TNumber(priority=0, string='1', payload=1)]),
+                        ])  # fixme: this is fragile
+                    elif isinstance(tokens[0], TLine) and (len(self.data.children) == 4):
+                        self.data.add_children([
+                            Instruction([TNumber(priority=0, string='1', payload=1)]),
+                        ])  # fixme: this is fragile
+
+                    # check parameters count
+                    if len(self.data.children) not in tokens[0].param_count:
+                        self.dump()
+                        raise ValueError(
+                            'SyntaxError: unexpected number of parameters (%s not in %s)' \
+                            % (len(self.data.children), tokens[0].param_count)
+                        )
                 else:
                     print(tokens)
                     raise ValueError('parse_instruction returned -1, but I dont how to parse these bytes')

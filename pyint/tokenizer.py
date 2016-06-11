@@ -60,7 +60,11 @@ class TFact(TFunc):
 # functions with param
 
 class TFuncWithParam(Token):
-    pass
+    def __init__(self, *args, param_count, **kwargs):
+        super(TFuncWithParam, self).__init__(*args, **kwargs)
+        if not isinstance(param_count, list):
+            param_count = [param_count]
+        self.param_count = param_count
 
 class TOp(TFuncWithParam):
     pass
@@ -68,13 +72,20 @@ class TOp(TFuncWithParam):
 class TAssign(TFuncWithParam):
     pass
 
+class TLine(TFuncWithParam):
+    pass
+
 # conditional statements
 
 class TCond(Token):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, param_count, **kwargs):
         super(TCond, self).__init__(*args, **kwargs)
         self.if_true = []
         self.if_false = []
+        if not isinstance(param_count, list):
+            param_count = [param_count]
+        self.param_count = param_count
+
 
     def add_if_true(self, iterable):
         self.if_true.extend(iterable)
@@ -119,7 +130,7 @@ class TOther(Token):
 
 
 tokens = {
-    0x04: TAssign(priority=5, string='->', payload='ft_vm_functions_assign'),
+    0x04: TAssign(priority=5, string='->', payload='ft_vm_functions_assign', param_count=2),
     0x0D: TFunc(priority=30, string='^2', payload='ft_vm_functions_square'),
 
     0x10: TParenthesisOpen(priority=0, string='('),
@@ -175,57 +186,57 @@ tokens = {
     0x5A: TVar(priority=0, string='Z'),
     0x5B: TVar(priority=0, string='Omega'),
 
-#0x5D: Token_INCOMPLETE(priority=0, callback='NULL', string='<incomplete>'),
+    # 0x5D: Token_INCOMPLETE(priority=0, callback='NULL', string='<incomplete>'),
 
-#0x63: Token_INCOMPLETE(priority=0, callback='NULL', string='<incomplete>'),
+    # 0x63: Token_INCOMPLETE(priority=0, callback='NULL', string='<incomplete>'),
 
-    0x6A: TOp(priority=2, string='=', payload='ft_vm_functions_equal'),
-    0x6B: TOp(priority=2, string='<', payload='ft_vm_functions_lower'),
-    0x6C: TOp(priority=2, string='>', payload='ft_vm_functions_greater'),
+    0x6A: TOp(priority=2, string='=', payload='ft_vm_functions_equal', param_count=2),
+    0x6B: TOp(priority=2, string='<', payload='ft_vm_functions_lower', param_count=2),
+    0x6C: TOp(priority=2, string='>', payload='ft_vm_functions_greater', param_count=2),
 
-    0x6F: TOp(priority=2, string='!=', payload='ft_vm_functions_not_equal'),
-    0x70: TOp(priority=10, string='+', payload='ft_vm_functions_add'),
-    0x71: TOp(priority=10, string='-', payload='ft_vm_functions_sub'),
+    0x6F: TOp(priority=2, string='!=', payload='ft_vm_functions_not_equal', param_count=2),
+    0x70: TOp(priority=10, string='+', payload='ft_vm_functions_add', param_count=2),
+    0x71: TOp(priority=10, string='-', payload='ft_vm_functions_sub', param_count=2),
 
-    0x82: TOp(priority=20, string='*', payload='ft_vm_functions_mul'),
-    0x83: TOp(priority=20, string='/', payload='ft_vm_functions_div'),
+    0x82: TOp(priority=20, string='*', payload='ft_vm_functions_mul', param_count=2),
+    0x83: TOp(priority=20, string='/', payload='ft_vm_functions_div', param_count=2),
 
     0x85: TFunc(priority=0, string='EffDessin', payload='ft_vm_functions_effdessin'),
 
-    0x93: TFuncWithParam(priority=6, string='Texte(', payload='ft_vm_functions_text'),
+    0x93: TFuncWithParam(priority=6, string='Texte(', payload='ft_vm_functions_text', param_count=3),
 
-    0x9C: TFuncWithParam(priority=6, string='Ligne(', payload='ft_vm_functions_line'),
-    0x9E: TFuncWithParam(priority=6, string='Pt-Aff(', payload='ft_vm_functions_ptaff'),
-    0x9F: TFuncWithParam(priority=6, string='Pt-NAff', payload='ft_vm_functions_ptnaff'),
+    0x9C: TLine(priority=6, string='Ligne(', payload='ft_vm_functions_line', param_count=[4, 5]),
+    0x9E: TFuncWithParam(priority=6, string='Pt-Aff(', payload='ft_vm_functions_ptaff', param_count=[2, 3]),
+    0x9F: TFuncWithParam(priority=6, string='Pt-NAff', payload='ft_vm_functions_ptnaff', param_count=[2, 3]),
 
-    0xB0: TFuncWithParam(priority=6, string='(-)', payload='ft_vm_functions_neg'),
-    0xB1: TFuncWithParam(priority=6, string='partEnt(', payload='ft_vm_functions_partent'),
+    0xB0: TFuncWithParam(priority=6, string='(-)', payload='ft_vm_functions_neg', param_count=1),
+    0xB1: TFuncWithParam(priority=6, string='partEnt(', payload='ft_vm_functions_partent', param_count=1),
 
-    0xB5: TFuncWithParam(priority=6, string='dim('),
+    0xB5: TFuncWithParam(priority=6, string='dim(', param_count=1),
 
-    0xBA: TFuncWithParam(priority=6, string='partDec(', payload='ft_vm_functions_partdec'),
-#0xBB: Token_INCOMPLETE(priority=0, callback='NULL', string='<incomplete>'),
-    0xBC: TFuncWithParam(priority=6, string='sqrt(', payload='ft_vm_functions_sqrt'),
+    0xBA: TFuncWithParam(priority=6, string='partDec(', payload='ft_vm_functions_partdec', param_count=1),
+    # 0xBB: Token_INCOMPLETE(priority=0, callback='NULL', string='<incomplete>'),
+    0xBC: TFuncWithParam(priority=6, string='sqrt(', payload='ft_vm_functions_sqrt', param_count=1),
 
-    0xCE: TIf(priority=1, string='If', payload='ft_vm_functions_if'),
+    0xCE: TIf(priority=1, string='If', payload='ft_vm_functions_if', param_count=1),
     0xCF: TThen(priority=1, string='Then'),
 
     0xD0: TElse(priority=1, string='Else'),
-    0xD1: TWhile(priority=1, string='While', payload='ft_vm_functions_while'),
+    0xD1: TWhile(priority=1, string='While', payload='ft_vm_functions_while', param_count=1),
 
-    0xD3: TFor(priority=1, string='For(', payload='ft_vm_functions_for'),
+    0xD3: TFor(priority=1, string='For(', payload='ft_vm_functions_for', param_count=4),
     0xD4: TEnd(priority=1, string='End'),
 
     0xD6: TOther(priority=0, string='Lbl'),
     0xD7: TOther(priority=0, string='Goto'),
 
-    0xDC: TFuncWithParam(priority=6, string='Input(', payload='ft_vm_functions_input'),
+    0xDC: TFuncWithParam(priority=6, string='Input(', payload='ft_vm_functions_input', param_count=2),
 
-    0xDE: TFuncWithParam(priority=6, string='Disp(', payload='ft_vm_functions_disp'),
+    0xDE: TFuncWithParam(priority=6, string='Disp(', payload='ft_vm_functions_disp', param_count=3),
 
     0xE1: TFunc(priority=0, string='EffEcr', payload='ft_vm_functions_effecr'),
 
-    0xF0: TOp(priority=30, string='^', payload='ft_vm_functions_pow'),
+    0xF0: TOp(priority=30, string='^', payload='ft_vm_functions_pow', param_count=2),
 
     (0x5d, 0x00): TVar(priority=0, string='L1'),
     (0x5d, 0x01): TVar(priority=0, string='L2'),
@@ -237,7 +248,7 @@ tokens = {
     (0x63, 0x0C): TVar(priority=0, string='Ymin'),
     (0x63, 0x0D): TVar(priority=0, string='Ymax'),
 
-    (0xBB, 0x0A): TFuncWithParam(priority=6, string='entAleat('),
+    (0xBB, 0x0A): TFuncWithParam(priority=6, string='entAleat(', param_count=1),
 }
 
 

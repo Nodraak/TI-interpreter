@@ -248,26 +248,18 @@ class Interpreter(object):
             self.screen_set_pxl(x, j)
 
     def ft_vm_functions_line(self, token):
-        if len(token.children) == 4:
-            x1, y1, x2, y2 = token.children
-            mark = 1
-        elif len(token.children) == 5:
-            x1, y1, x2, y2, mark = token.children
-            mark = self.get_arg_value(mark)
-            if mark != 0:
-                raise Exception
-        else:
-            raise ValueError('Syntax error: wrong number of param. TODO should have been tested earlier')
+        x1, y1, x2, y2, mark = token.children
 
         x1 = self.get_arg_value(x1, int)
         y1 = self.get_arg_value(y1, int)
         x2 = self.get_arg_value(x2, int)
         y2 = self.get_arg_value(y2, int)
+        mark = self.get_arg_value(mark)
 
         if x1 == x2:
             self._ft_vm_functions_vline(x1, y1, y2)
         else:
-            if (x1 > x2):
+            if x1 > x2:
                 x1, x2 = x2, x1
 
             coeff = (y2-y1) / (x2-x1)
