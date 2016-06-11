@@ -38,7 +38,7 @@ class Interpreter(object):
 
             if update_screen:
                 self.refresh_screen()
-                time.sleep(1.0/20)
+                time.sleep(0.020)
 
     def refresh_screen(self):
         tmp_pxl = []
@@ -62,18 +62,19 @@ class Interpreter(object):
         if 0 <= x and x < 95 and 0 <= y and y < 63:
             self.screen[y][x] = val
 
-    def get_arg_value(self, ins):
+    def get_arg_value(self, ins, coerce=lambda x: x):
         token = ins.as_token()
 
         if isinstance(token, TNumber):
-            return token.payload
+            # todo check if it changes the value, for ex int(3.14) != 3.14 but int(42.0) == 42.0
+            return coerce(token.payload)
         elif isinstance(token, TVar):
-            return self.variables[token.string]
+            return coerce(self.variables[token.string])
         elif isinstance(token, TString):
-            return token.string
+            return coerce(token.string)
         elif isinstance(token, TFuncWithParam):
             self.run([ins])
-            return self.ret
+            return coerce(self.ret)
 
         raise ValueError('InterpreterError: unknown value "%s"' % str(token))
 
@@ -247,12 +248,21 @@ class Interpreter(object):
             self.screen_set_pxl(x, j)
 
     def ft_vm_functions_line(self, token):
-        x1, y1, x2, y2 = token.children
+        if len(token.children) == 4:
+            x1, y1, x2, y2 = token.children
+            mark = 1
+        elif len(token.children) == 5:
+            x1, y1, x2, y2, mark = token.children
+            mark = self.get_arg_value(mark)
+            if mark != 0:
+                raise Exception
+        else:
+            raise ValueError('Syntax error: wrong number of param. TODO should have been tested earlier')
 
-        x1 = self.get_arg_value(x1)
-        y1 = self.get_arg_value(y1)
-        x2 = self.get_arg_value(x2)
-        y2 = self.get_arg_value(y2)
+        x1 = self.get_arg_value(x1, int)
+        y1 = self.get_arg_value(y1, int)
+        x2 = self.get_arg_value(x2, int)
+        y2 = self.get_arg_value(y2, int)
 
         if x1 == x2:
             self._ft_vm_functions_vline(x1, y1, y2)
@@ -263,7 +273,19 @@ class Interpreter(object):
             coeff = (y2-y1) / (x2-x1)
             for i in range(x1, x2+1):
                 j = y1 + (i-x1)*coeff
-                self.screen_set_pxl(i, int(j))
+                self.screen_set_pxl(i, int(j), mark)
+
+    def ft_vm_functions_ptaff(self, token):
+        x, y = token.children
+        x = self.get_arg_value(x)
+        y = self.get_arg_value(y)
+        self.screen_set_pxl(x, y)
+
+    def ft_vm_functions_ptnaff(self, token):
+        x, y = token.children
+        x = self.get_arg_value(x)
+        y = self.get_arg_value(y)
+        self.screen_set_pxl(x, y, 0)
 
 
 def text_get_pixel(letter, j, i):
